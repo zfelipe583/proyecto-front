@@ -10,7 +10,7 @@ export const CartScreen = ({ navigation }) => {
   const [zipCode, setZipCode] = useState('');
   const [state, setState] = useState('');
   const [city, setCity] = useState('');
-  const [calle, setCalle] = useState('Calle Flores 123'); 
+  const [calle, setCalle] = useState(''); 
   const [loading, setLoading] = useState(false);
   const [checkingOut, setCheckingOut] = useState(false);
 

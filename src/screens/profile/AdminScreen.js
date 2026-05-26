@@ -158,6 +158,14 @@ export const AdminScreen = () => {
     );
   };
 
+  if (!user) {
+    return (
+      <View style={{ flex: 1, backgroundColor: '#f8fafc', justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="small" color="#6366f1" />
+      </View>
+    );
+  }
+
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <StatusBar style="dark" />

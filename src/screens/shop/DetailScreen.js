@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, ScrollView, Alert, Dimensions } from 'react-native';
 import { useApp } from '../../context/AppContext';
+import { apiService } from '../../api/client';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 
@@ -9,6 +10,24 @@ const { width } = Dimensions.get('window');
 export const DetailScreen = ({ route, navigation }) => {
   const { product } = route.params;
   const { addToCart, cart } = useApp();
+  const [seller, setSeller] = React.useState(null);
+
+  React.useEffect(() => {
+    const fetchSellerInfo = async () => {
+      try {
+        const sellerId = product.seller_id || product.vendedor_id;
+        if (sellerId) {
+          const data = await apiService.getUser(sellerId);
+          if (data) {
+            setSeller(data);
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching seller details:', err);
+      }
+    };
+    fetchSellerInfo();
+  }, [product]);
 
   const name = product.name || product.nombre || 'Sin nombre';
   const price = product.price !== undefined ? product.price : (product.precio || 0);
@@ -130,18 +149,24 @@ export const DetailScreen = ({ route, navigation }) => {
 
           <View style={styles.divider} />
 
-          {/* Información del Vendedor (Basada en Jaime) */}
+          {/* Información del Vendedor */}
           <Text style={styles.sectionTitle}>Información del Vendedor</Text>
           <View style={styles.sellerCard}>
             <View style={styles.sellerAvatar}>
               <Ionicons name="storefront" size={22} color="#6366f1" />
             </View>
             <View style={styles.sellerInfo}>
-              <Text style={styles.sellerName}>Zermeño Tech Store</Text>
-              <Text style={styles.sellerSub}>Vendedor verificado en Purísima del Rincón</Text>
+              <Text style={styles.sellerName}>
+                {seller?.seller_data?.store_name || seller?.datos_vendedor?.nombre_tienda || 'Tienda Colaboradora'}
+              </Text>
+              <Text style={styles.sellerSub}>
+                Vendedor: {seller?.name || 'Vendedor Verificado'} • {seller?.addresses?.[0]?.city || seller?.direcciones?.[0]?.ciudad || 'Guanajuato'}
+              </Text>
               <View style={styles.sellerRating}>
                 <Ionicons name="shield-checkmark" size={13} color="#16a34a" />
-                <Text style={styles.sellerRatingText}> Calificación: 4.9/5.0</Text>
+                <Text style={styles.sellerRatingText}>
+                  {' '}Calificación: {seller?.seller_data?.average_rating || seller?.datos_vendedor?.calificacion_promedio || '5.0'} / 5.0
+                </Text>
               </View>
             </View>
           </View>

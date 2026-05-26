@@ -156,6 +156,16 @@ const delay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const apiService = {
   // --- USUARIOS (`/api/users`) ---
+  getUser: async (userId) => {
+    if (USE_MOCK) {
+      await delay();
+      return mockUsuarios.find(u => u._id === userId);
+    } else {
+      const response = await api.get('/users');
+      return response.data.find(u => u._id === userId);
+    }
+  },
+
   login: async (email, password) => {
     if (USE_MOCK) {
       await delay();
