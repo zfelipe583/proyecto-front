@@ -4,7 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 
-export const AdminScreen = () => {
+export const AdminScreen = ({ navigation }) => {
   const { user, orders, products, createNewProduct, updateExistingProduct, updateShippingDetails, logout } = useApp();
   
   const [name, setName] = useState('');
@@ -175,6 +175,9 @@ export const AdminScreen = () => {
           <Text style={styles.sellerName}>{user?.name || 'Jaime Eduardo'} (Rating: {user?.seller_data?.average_rating || user?.datos_vendedor?.calificacion_promedio || 5.0})</Text>
           <Text style={styles.clabeText}>CLABE: {user?.seller_data?.bank_clabe || user?.datos_vendedor?.clabe_interbancaria}</Text>
         </View>
+        <TouchableOpacity style={styles.editProfileBtn} onPress={() => navigation.navigate('EditProfile')}>
+          <Ionicons name="pencil-outline" size={18} color="#EA580C" />
+        </TouchableOpacity>
         <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
           <Ionicons name="log-out-outline" size={20} color="#ef4444" />
         </TouchableOpacity>
@@ -433,6 +436,7 @@ const styles = StyleSheet.create({
   storeName: { fontSize: 18, fontWeight: '900', color: '#FFFFFF', letterSpacing: -0.5 },
   sellerName: { fontSize: 12, color: '#94A3B8', marginTop: 2, fontWeight: '500' },
   clabeText: { fontSize: 10, color: '#64748B', marginTop: 4, fontFamily: 'monospace' },
+  editProfileBtn: { padding: 10, backgroundColor: '#FFF7ED', borderRadius: 12, marginRight: 8 },
   logoutBtn: { padding: 10, backgroundColor: 'rgba(239, 68, 68, 0.1)', borderRadius: 12 },
   metricsGrid: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 24 },
   metricCard: {

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
+import React, { createContext, useState, useEffect, useContext, useRef } from 'react';
 import { apiService } from '../api/client';
 
 export const AppContext = createContext();
@@ -15,15 +15,15 @@ export const AppProvider = ({ children }) => {
     fetchProductsList();
   }, []);
 
-  // Cargar información específica del usuario cuando inicie sesión
+  // Cargar información específica del usuario cuando inicie sesión (solo cuando cambia el _id)
   useEffect(() => {
-    if (user) {
+    if (user?._id) {
       loadUserData();
     } else {
       setCart({ items: [] });
       setOrders([]);
     }
-  }, [user]);
+  }, [user?._id]); // Solo re-ejecutar al hacer login/logout, NO al editar perfil
 
   const fetchProductsList = async () => {
     try {
@@ -94,6 +94,23 @@ export const AppProvider = ({ children }) => {
 
   const logout = () => {
     setUser(null);
+  };
+
+  const updateUser = async (updatedData) => {
+    if (!user) return;
+    setLoading(true);
+    try {
+      // Llamamos al backend pero NO dependemos de su respuesta para actualizar el estado
+      // El backend puede devolver solo los campos actualizados o un objeto incompleto
+      await apiService.updateUser(user._id, updatedData);
+      // Hacemos merge con el usuario actual para preservar _id, is_seller, addresses, etc.
+      setUser(prev => ({ ...prev, ...updatedData }));
+    } catch (error) {
+      console.error('Error updating user:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const addToCart = async (product, quantity = 1) => {
@@ -273,6 +290,7 @@ export const AppProvider = ({ children }) => {
       updateShippingDetails,
       createNewProduct,
       updateExistingProduct,
+      updateUser,
       refreshData: loadUserData,
     }}>
       {children}

@@ -160,15 +160,16 @@ export const apiService = {
   login: async (email, password) => {
     if (USE_MOCK) {
       await delay();
-      const user = mockUsuarios.find(u => u.email === email);
+      const user = mockUsuarios.find(u => u.email.toLowerCase() === email.trim().toLowerCase());
       if (!user) throw new Error('Usuario no encontrado');
       return { token: 'mock-jwt-token-12345', user };
     } else {
-      // El backend no tiene un router de login dedicado, por lo que buscamos en todos los usuarios
       const response = await api.get('/users');
-      const user = response.data.find(u => u.email === email.trim().toLowerCase());
+      // Comparamos ambos en minúsculas para evitar problemas de capitalización
+      const user = response.data.find(
+        u => u.email && u.email.trim().toLowerCase() === email.trim().toLowerCase()
+      );
       if (!user) throw new Error('Usuario no encontrado');
-      // Verificación de contraseña básica
       return { token: 'real-jwt-token-' + user._id, user };
     }
   },
@@ -267,17 +268,24 @@ export const apiService = {
       }
       return cart;
     } else {
-      // El backend no tiene GET /carts/:userId. Buscamos en la lista de todos los carritos
+      // Buscamos el carrito del usuario en la lista completa
       const response = await api.get('/carts');
       let cart = response.data.find(c => c.user_id === userId);
       if (!cart) {
-        // Si no existe, creamos un carrito nuevo para este usuario en el backend
-        const createResponse = await api.post('/carts', { user_id: userId, items: [] });
-        cart = createResponse.data;
+        // Si no existe, intentamos crearlo en el backend
+        try {
+          const createResponse = await api.post('/carts', { user_id: userId, items: [] });
+          cart = createResponse.data;
+        } catch (err) {
+          // Si el backend rechaza la creación (ej. 400), usamos un carrito vacío local
+          console.warn('No se pudo crear carrito en servidor, usando carrito local vacío:', err.message);
+          cart = { user_id: userId, items: [], _local: true };
+        }
       }
       return cart;
     }
   },
+
 
   updateCart: async (userId, items) => {
     if (USE_MOCK) {
@@ -412,6 +420,22 @@ export const apiService = {
       return response.data.filter(order =>
         order.items.some(item => item.seller_id === sellerId)
       );
+    }
+  },
+
+  // --- ACTUALIZAR USUARIO (`/api/users/:id`) ---
+  updateUser: async (userId, userData) => {
+    if (USE_MOCK) {
+      await delay();
+      const index = mockUsuarios.findIndex(u => u._id === userId);
+      if (index !== -1) {
+        mockUsuarios[index] = { ...mockUsuarios[index], ...userData };
+        return mockUsuarios[index];
+      }
+      throw new Error('Usuario no encontrado');
+    } else {
+      const response = await api.patch(`/users/${userId}`, userData);
+      return response.data;
     }
   },
 

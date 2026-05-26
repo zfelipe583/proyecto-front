@@ -9,9 +9,11 @@ import { DetailScreen } from '../screens/shop/DetailScreen';
 import { CartScreen } from '../screens/cart/CartScreen';
 import { OrdersScreen } from '../screens/shop/OrdersScreen';
 import { AdminScreen } from '../screens/profile/AdminScreen';
+import { EditProfileScreen } from '../screens/profile/EditProfileScreen';
 
 const Tab = createBottomTabNavigator();
 const ShopStack = createStackNavigator();
+const AdminStack = createStackNavigator();
 
 const ShopStackScreen = () => (
   <ShopStack.Navigator
@@ -31,7 +33,33 @@ const ShopStackScreen = () => (
   >
     <ShopStack.Screen name="Tienda Principal" component={HomeScreen} options={{ title: 'MarketPlace' }} />
     <ShopStack.Screen name="ProductDetail" component={DetailScreen} options={{ title: 'Detalle del Producto' }} />
+    <ShopStack.Screen
+      name="EditProfile"
+      component={EditProfileScreen}
+      options={{ title: 'Editar Perfil' }}
+    />
   </ShopStack.Navigator>
+);
+
+const AdminStackScreen = () => (
+  <AdminStack.Navigator
+    screenOptions={{
+      headerStyle: {
+        backgroundColor: '#EA580C',
+        borderBottomWidth: 0,
+        elevation: 0,
+        shadowOpacity: 0,
+      },
+      headerTitleStyle: {
+        fontWeight: '900',
+        color: '#FFFFFF',
+      },
+      headerTintColor: '#FFFFFF',
+    }}
+  >
+    <AdminStack.Screen name="AdminPanel" component={AdminScreen} options={{ title: 'Admin Panel' }} />
+    <AdminStack.Screen name="EditProfile" component={EditProfileScreen} options={{ title: 'Editar Perfil' }} />
+  </AdminStack.Navigator>
 );
 
 export const MainTabNavigator = ({ userRole }) => {
@@ -103,8 +131,8 @@ export const MainTabNavigator = ({ userRole }) => {
       {isAdmin && (
         <Tab.Screen 
           name="AdminTab" 
-          component={AdminScreen} 
-          options={{ title: 'Admin Panel' }} 
+          component={AdminStackScreen} 
+          options={{ title: 'Admin Panel', headerShown: false }} 
         />
       )}
     </Tab.Navigator>

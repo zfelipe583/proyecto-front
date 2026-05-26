@@ -55,7 +55,7 @@ export const HomeScreen = ({ navigation }) => {
             <Text style={styles.subWelcome}>Hola, {user?.name || 'Comprador'}</Text>
           </View>
           <View style={styles.headerRight}>
-            <TouchableOpacity style={styles.avatarButton}>
+            <TouchableOpacity style={styles.avatarButton} onPress={() => navigation.navigate('EditProfile')}>
               <Ionicons name="person-circle-outline" size={44} color="#111827" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
