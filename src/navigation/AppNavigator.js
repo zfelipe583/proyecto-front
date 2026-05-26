@@ -8,7 +8,7 @@ import { MainTabNavigator } from './MainTabNavigator';
 const Stack = createStackNavigator();
 
 export const AppNavigator = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(true); 
+  const [isLoggedIn, setIsLoggedIn] = useState(false); 
   const [userRole, setUserRole] = useState('client'); 
 
   return (
