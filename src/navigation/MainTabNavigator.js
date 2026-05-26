@@ -17,17 +17,16 @@ const ShopStackScreen = () => (
   <ShopStack.Navigator
     screenOptions={{
       headerStyle: {
-        backgroundColor: '#ffffff',
-        borderBottomWidth: 1,
-        borderBottomColor: '#e2e8f0',
+        backgroundColor: '#EA580C', // Brand orange
+        borderBottomWidth: 0,
         elevation: 0,
         shadowOpacity: 0,
       },
       headerTitleStyle: {
-        fontWeight: 'bold',
-        color: '#0f172a',
+        fontWeight: '900',
+        color: '#FFFFFF', // White text
       },
-      headerTintColor: '#6366f1',
+      headerTintColor: '#FFFFFF', // White icons/back button
     }}
   >
     <ShopStack.Screen name="Tienda Principal" component={HomeScreen} options={{ title: 'E-Commerce' }} />
@@ -55,7 +54,7 @@ export const MainTabNavigator = ({ userRole }) => {
           }
           return <Ionicons name={iconName} size={size - 2} color={color} />;
         },
-        tabBarActiveTintColor: '#6366f1',
+        tabBarActiveTintColor: '#EA580C', // Brand orange
         tabBarInactiveTintColor: '#94a3b8',
         tabBarStyle: { 
           paddingBottom: insets.bottom > 0 ? insets.bottom : 8, 
@@ -70,15 +69,14 @@ export const MainTabNavigator = ({ userRole }) => {
           elevation: 4,
         },
         headerStyle: {
-          backgroundColor: '#ffffff',
-          borderBottomWidth: 1,
-          borderBottomColor: '#f1f5f9',
+          backgroundColor: '#EA580C', // Brand orange
+          borderBottomWidth: 0,
           elevation: 0,
           shadowOpacity: 0,
         },
         headerTitleStyle: {
-          fontWeight: 'bold',
-          color: '#1e293b',
+          fontWeight: '900',
+          color: '#FFFFFF', // White text
         },
       })}
     >
