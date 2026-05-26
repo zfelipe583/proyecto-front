@@ -1,8 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, ActivityIndicator, ScrollView } from 'react-native';
+import { 
+  View, 
+  Text, 
+  TextInput, 
+  StyleSheet, 
+  TouchableOpacity, 
+  Alert, 
+  ActivityIndicator, 
+  KeyboardAvoidingView,
+  Platform,
+  Animated,
+  Dimensions
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useApp } from '../../context/AppContext';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
+import { LinearGradient } from 'expo-linear-gradient';
+
+const { width, height } = Dimensions.get('window');
 
 export const RegisterScreen = ({ navigation }) => {
   const { registerPersona } = useApp();
@@ -30,7 +46,6 @@ export const RegisterScreen = ({ navigation }) => {
       return;
     }
 
-    // Configurar objeto de usuario según esquema de MongoDB
     const userData = {
       name: name,
       email: email.trim().toLowerCase(),
@@ -79,183 +94,284 @@ export const RegisterScreen = ({ navigation }) => {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
+    <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
       <StatusBar style="dark" />
       
-      <View style={styles.header}>
-        <Text style={styles.title}>Crear Cuenta</Text>
-        <Text style={styles.subtitle}>Únete al Marketplace de Guanajuato</Text>
-      </View>
+      {/* Premium Background Gradient Fade */}
+      <LinearGradient
+        colors={['#FED7AA', '#F3F4F6']} // Softer orange fading seamlessly into the light gray base
+        style={styles.fadeBackground}
+      />
 
-      <View style={styles.formCard}>
-        <Text style={styles.label}>Nombre Completo:</Text>
-        <TextInput 
-          style={styles.input} 
-          placeholder="Ej. Juan Pérez" 
-          value={name} 
-          onChangeText={setName} 
-          placeholderTextColor="#94a3b8"
-        />
-
-        <Text style={styles.label}>Correo Electrónico:</Text>
-        <TextInput 
-          style={styles.input} 
-          placeholder="correo@ejemplo.com" 
-          value={email} 
-          onChangeText={setEmail} 
-          keyboardType="email-address" 
-          autoCapitalize="none" 
-          placeholderTextColor="#94a3b8"
-        />
-
-        <Text style={styles.label}>Contraseña:</Text>
-        <TextInput 
-          style={styles.input} 
-          placeholder="Mínimo 6 caracteres" 
-          value={password} 
-          onChangeText={setPassword} 
-          secureTextEntry 
-          placeholderTextColor="#94a3b8"
-        />
-
-        {/* Selector de Rol */}
-        <Text style={styles.label}>Tipo de Perfil:</Text>
-        <View style={styles.roleSelectorRow}>
-          <TouchableOpacity
-            style={[styles.roleChip, !esVendedor && styles.roleChipActive]}
-            onPress={() => setEsVendedor(false)}
-          >
-            <Ionicons name="cart-outline" size={16} color={!esVendedor ? '#ffffff' : '#475569'} style={{marginRight: 4}} />
-            <Text style={[styles.roleChipText, !esVendedor && { color: '#ffffff' }]}>Comprador</Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity
-            style={[styles.roleChip, esVendedor && styles.roleChipActiveActive]}
-            onPress={() => setEsVendedor(true)}
-          >
-            <Ionicons name="storefront-outline" size={16} color={esVendedor ? '#ffffff' : '#475569'} style={{marginRight: 4}} />
-            <Text style={[styles.roleChipText, esVendedor && { color: '#ffffff' }]}>Vendedor</Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Campos Condicionales del Vendedor */}
-        {esVendedor && (
-          <View style={styles.sellerSection}>
-            <View style={styles.divider} />
-            <Text style={styles.sellerTitle}>Datos de tu Tienda</Text>
-            
-            <Text style={styles.label}>Nombre de la Tienda:</Text>
-            <TextInput 
-              style={styles.input} 
-              placeholder="Ej. Zermeño Tech Store" 
-              value={nombreTienda} 
-              onChangeText={setNombreTienda} 
-              placeholderTextColor="#94a3b8"
-            />
-
-            <Text style={styles.label}>CLABE Interbancaria (18 dígitos):</Text>
-            <TextInput 
-              style={styles.input} 
-              placeholder="012320012345678901" 
-              value={clabe} 
-              onChangeText={setClabe} 
-              keyboardType="numeric"
-              maxLength={18}
-              placeholderTextColor="#94a3b8"
-            />
-          </View>
-        )}
-
-        <TouchableOpacity 
-          style={[styles.button, loading && styles.buttonDisabled]} 
-          onPress={handleRegister}
-          disabled={loading}
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        enabled={Platform.OS === 'ios'}
+        style={styles.container}
+      >
+        <Animated.ScrollView 
+          contentContainerStyle={styles.scrollContent}
+          keyboardShouldPersistTaps="handled"
+          showsVerticalScrollIndicator={false}
+          bounces={false}
         >
-          {loading ? (
-            <ActivityIndicator color="#fff" size="small" />
-          ) : (
-            <Text style={styles.buttonText}>Registrarse</Text>
-          )}
-        </TouchableOpacity>
-      </View>
+          {/* Header on Background */}
+          <View style={styles.header}>
+            <View style={styles.logoRow}>
+              <Ionicons name="bag-handle" size={32} color="#2563EB" style={{ marginRight: 8 }} />
+              <Text style={styles.logoText}>GTO Market</Text>
+            </View>
+            <Text style={styles.subtitle}>Crea tu cuenta gratis</Text>
+          </View>
 
-      <TouchableOpacity onPress={() => navigation.navigate('Login')} style={{ marginTop: 16 }}>
-        <Text style={styles.linkText}>¿Ya tienes cuenta? Inicia Sesión</Text>
-      </TouchableOpacity>
-    </ScrollView>
+          {/* Form Container */}
+          <View style={styles.card}>
+            
+            <Text style={styles.inputLabel}>Nombre Completo</Text>
+            <TextInput 
+              style={styles.input} 
+              placeholder="Ej. Juan Pérez" 
+              value={name} 
+              onChangeText={setName} 
+              placeholderTextColor="#9CA3AF"
+            />
+
+            <Text style={styles.inputLabel}>Correo Electrónico</Text>
+            <TextInput 
+              style={styles.input} 
+              placeholder="correo@ejemplo.com" 
+              value={email} 
+              onChangeText={setEmail} 
+              keyboardType="email-address" 
+              autoCapitalize="none" 
+              placeholderTextColor="#9CA3AF"
+            />
+
+            <Text style={styles.inputLabel}>Contraseña</Text>
+            <TextInput 
+              style={styles.input} 
+              placeholder="Mínimo 6 caracteres" 
+              value={password} 
+              onChangeText={setPassword} 
+              secureTextEntry 
+              placeholderTextColor="#9CA3AF"
+            />
+
+            {/* Selector de Rol */}
+            <Text style={styles.inputLabel}>¿Qué quieres hacer?</Text>
+            <View style={styles.roleSelectorRow}>
+              <TouchableOpacity
+                style={[styles.roleChip, !esVendedor && styles.roleChipActiveBuyer]}
+                onPress={() => setEsVendedor(false)}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="cart" size={18} color={!esVendedor ? '#ffffff' : '#6B7280'} style={{marginRight: 6}} />
+                <Text style={[styles.roleChipText, !esVendedor && { color: '#ffffff' }]}>Comprar</Text>
+              </TouchableOpacity>
+              
+              <TouchableOpacity
+                style={[styles.roleChip, esVendedor && styles.roleChipActiveSeller]}
+                onPress={() => setEsVendedor(true)}
+                activeOpacity={0.8}
+              >
+                <Ionicons name="storefront" size={18} color={esVendedor ? '#ffffff' : '#6B7280'} style={{marginRight: 6}} />
+                <Text style={[styles.roleChipText, esVendedor && { color: '#ffffff' }]}>Vender</Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* Campos Condicionales del Vendedor */}
+            {esVendedor && (
+              <View style={styles.sellerSection}>
+                <View style={styles.dividerContainer}>
+                  <View style={styles.dividerLine} />
+                  <Text style={styles.dividerText}>Datos de Tienda</Text>
+                  <View style={styles.dividerLine} />
+                </View>
+                
+                <Text style={styles.inputLabel}>Nombre de la Tienda</Text>
+                <TextInput 
+                  style={styles.input} 
+                  placeholder="Ej. Zermeño Tech Store" 
+                  value={nombreTienda} 
+                  onChangeText={setNombreTienda} 
+                  placeholderTextColor="#9CA3AF"
+                />
+
+                <Text style={styles.inputLabel}>CLABE Bancaria (18 dígitos)</Text>
+                <TextInput 
+                  style={styles.input} 
+                  placeholder="012320012345678901" 
+                  value={clabe} 
+                  onChangeText={setClabe} 
+                  keyboardType="numeric"
+                  maxLength={18}
+                  placeholderTextColor="#9CA3AF"
+                />
+              </View>
+            )}
+
+            <TouchableOpacity 
+              style={[styles.button, loading && styles.buttonDisabled]} 
+              onPress={handleRegister}
+              disabled={loading}
+              activeOpacity={0.8}
+            >
+              {loading ? (
+                <ActivityIndicator color="#ffffff" size="small" />
+              ) : (
+                <Text style={styles.buttonText}>Registrarme</Text>
+              )}
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate('Login')} style={styles.loginLink} activeOpacity={0.6}>
+              <Text style={styles.loginLinkText}>¿Ya tienes cuenta? Inicia Sesión</Text>
+            </TouchableOpacity>
+          </View>
+
+        </Animated.ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8fafc', padding: 16 },
-  scrollContent: { paddingBottom: 40, justifyContent: 'center' },
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#F3F4F6', // Light gray background
+  },
+  fadeBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    height: height * 0.45,
+  },
+  container: { 
+    flex: 1, 
+  },
+  scrollContent: {
+    flexGrow: 1,
+    paddingTop: 40,
+    paddingBottom: 40,
+    justifyContent: 'center', 
+  },
   header: {
     alignItems: 'center',
-    marginTop: 20,
+    marginBottom: 60,
+  },
+  logoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  logoText: { 
+    fontSize: 32, 
+    fontWeight: '900', 
+    color: '#EA580C',
+    letterSpacing: -1,
+  },
+  subtitle: {
+    marginTop: 6,
+    fontSize: 16,
+    color: '#6B7280',
+    fontWeight: '500',
+  },
+  card: {
+    marginHorizontal: 24,
+    paddingHorizontal: 16, // Adjusted slightly since there's no visible box border
+    paddingVertical: 12,
+  },
+  inputLabel: {
+    fontSize: 13,
+    color: '#4B5563',
+    fontWeight: '600',
+    marginBottom: 6,
+    marginLeft: 4,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+  },
+  input: { 
+    backgroundColor: '#F9FAFB', 
+    height: 52,
+    borderWidth: 1,
+    borderColor: '#E5E7EB', 
+    borderRadius: 10,
+    fontSize: 16,
+    color: '#111827',
+    paddingHorizontal: 16,
     marginBottom: 20,
   },
-  title: { fontSize: 26, fontWeight: 'bold', color: '#1e293b' },
-  subtitle: { fontSize: 12, color: '#64748b', marginTop: 4 },
-  formCard: { 
-    backgroundColor: '#ffffff', 
-    padding: 16, 
-    borderRadius: 16, 
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    shadowColor: '#0f172a',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.02,
-    shadowRadius: 6,
-    elevation: 2,
-  },
-  label: { fontSize: 12, fontWeight: 'bold', marginTop: 10, color: '#475569' },
-  input: { borderWidth: 1, borderColor: '#cbd5e1', padding: 10, borderRadius: 8, marginTop: 4, marginBottom: 4, fontSize: 14, color: '#334155', backgroundColor: '#ffffff' },
   roleSelectorRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginTop: 6,
-    marginBottom: 10,
+    marginBottom: 20,
   },
   roleChip: {
     flex: 0.48,
     flexDirection: 'row',
-    paddingVertical: 10,
+    height: 52,
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: '#cbd5e1',
+    borderColor: '#E5E7EB',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#F9FAFB',
   },
-  roleChipActive: {
-    backgroundColor: '#4f46e5',
-    borderColor: '#4f46e5',
+  roleChipActiveBuyer: {
+    backgroundColor: '#2563EB', // Blue for buyer
+    borderColor: '#2563EB',
   },
-  roleChipActiveActive: {
-    backgroundColor: '#d97706',
-    borderColor: '#d97706',
+  roleChipActiveSeller: {
+    backgroundColor: '#EA580C', // Orange for seller
+    borderColor: '#EA580C',
   },
   roleChipText: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#475569',
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#4B5563',
   },
   sellerSection: {
-    marginTop: 6,
+    marginTop: 0,
   },
-  divider: {
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 16,
+    marginBottom: 24,
+  },
+  dividerLine: {
+    flex: 1,
     height: 1,
-    backgroundColor: '#e2e8f0',
-    marginVertical: 12,
+    backgroundColor: '#E5E7EB',
   },
-  sellerTitle: {
-    fontSize: 14,
+  dividerText: {
+    marginHorizontal: 12,
+    color: '#9CA3AF',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  button: { 
+    width: '100%',
+    backgroundColor: '#EA580C', 
+    height: 52,
+    justifyContent: 'center',
+    alignItems: 'center', 
+    borderRadius: 10, 
+    marginTop: 10,
+  },
+  buttonDisabled: {
+    backgroundColor: '#FDBA74',
+  },
+  buttonText: { 
+    color: '#ffffff', 
+    fontSize: 17, 
     fontWeight: 'bold',
-    color: '#b45309',
-    marginBottom: 6,
   },
-  button: { backgroundColor: '#4f46e5', padding: 14, borderRadius: 10, alignItems: 'center', marginTop: 20 },
-  buttonDisabled: { backgroundColor: '#cbd5e1' },
-  buttonText: { color: '#fff', fontSize: 15, fontWeight: 'bold' },
-  linkText: { color: '#4f46e5', textAlign: 'center', fontSize: 13, fontWeight: '500' }
+  loginLink: {
+    alignItems: 'center',
+    marginTop: 24,
+  },
+  loginLinkText: {
+    color: '#2563EB', // Blue link
+    fontSize: 14,
+    fontWeight: '600',
+  },
 });
