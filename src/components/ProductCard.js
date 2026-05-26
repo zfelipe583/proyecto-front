@@ -1,15 +1,49 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Dimensions } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 
 export const ProductCard = ({ product, onPress }) => {
+  const imageUri = product.imagenes?.[0] || product.image || 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=200';
+  const name = product.nombre || product.name || 'Sin nombre';
+  const price = product.precio !== undefined ? product.precio : (product.price || 0);
+  const category = product.categoria?.nombre || 'General';
+  const isLowStock = product.stock === 1;
+  const isOutOfStock = product.stock <= 0;
+
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
-      <Image source={{ uri: product.image }} style={styles.image} />
+      <Image source={{ uri: imageUri }} style={styles.image} />
+      
+      {/* Category Badge */}
+      <View style={styles.categoryBadge}>
+        <Text style={styles.categoryText}>{category}</Text>
+      </View>
+
       <View style={styles.infoContainer}>
-        <Text style={styles.title} numberOfLines={1}>{product.name}</Text>
-        <Text style={styles.price}>${product.price.toFixed(2)}</Text>
+        <Text style={styles.title} numberOfLines={1}>{name}</Text>
+        
+        <View style={styles.priceRow}>
+          <Text style={styles.price}>
+            ${price.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+          </Text>
+
+          {/* Stock Tag */}
+          {isOutOfStock ? (
+            <View style={[styles.stockBadge, styles.stockAlert]}>
+              <Text style={[styles.stockText, { color: '#991b1b' }]}>Agotado</Text>
+            </View>
+          ) : isLowStock ? (
+            <View style={[styles.stockBadge, styles.stockWarning]}>
+              <Text style={[styles.stockText, { color: '#9a3412' }]}>¡Último!</Text>
+            </View>
+          ) : product.stock !== undefined ? (
+            <View style={[styles.stockBadge, styles.stockOk]}>
+              <Text style={[styles.stockText, { color: '#166534' }]}>{product.stock} disp.</Text>
+            </View>
+          ) : null}
+        </View>
       </View>
     </TouchableOpacity>
   );
@@ -17,34 +51,74 @@ export const ProductCard = ({ product, onPress }) => {
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
     margin: 8,
-    width: width / 2 - 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    width: width / 2 - 20,
+    shadowColor: '#0f172a',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    elevation: 2,
+    borderWidth: 1,
+    borderColor: '#f1f5f9',
     overflow: 'hidden'
   },
   image: {
     width: '100%',
-    height: 150,
-    backgroundColor: '#f9f9f9'
+    height: 120,
+    backgroundColor: '#f8fafc',
+    resizeMode: 'cover',
+  },
+  categoryBadge: {
+    position: 'absolute',
+    top: 8,
+    left: 8,
+    backgroundColor: 'rgba(15, 23, 42, 0.65)',
+    paddingHorizontal: 8,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  categoryText: {
+    fontSize: 9,
+    fontWeight: 'bold',
+    color: '#ffffff',
   },
   infoContainer: {
-    padding: 10,
+    padding: 12,
   },
   title: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: 'bold',
-    color: '#333'
+    color: '#1e293b'
+  },
+  priceRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
   },
   price: {
-    fontSize: 14,
-    color: '#007bff',
-    marginTop: 4,
-    fontWeight: '600'
+    fontSize: 13,
+    color: '#6366f1',
+    fontWeight: '700'
+  },
+  stockBadge: {
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 6,
+  },
+  stockOk: {
+    backgroundColor: '#dcfce7',
+  },
+  stockWarning: {
+    backgroundColor: '#ffedd5',
+  },
+  stockAlert: {
+    backgroundColor: '#fee2e2',
+  },
+  stockText: {
+    fontSize: 8,
+    fontWeight: 'bold',
   }
 });
