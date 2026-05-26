@@ -24,8 +24,10 @@ export const OrdersScreen = () => {
       minute: '2-digit'
     });
 
+    const isOrderShipped = order.status === 'shipped' || order.estado_general === 'enviado';
+
     return (
-      <View style={styles.orderCard}>
+      <View style={[styles.orderCard, { borderLeftColor: isOrderShipped ? '#16A34A' : '#EA580C' }]}>
         <View style={styles.orderHeader}>
           <View>
             <Text style={styles.orderId} numberOfLines={1}>ID: {order._id}</Text>
@@ -53,9 +55,19 @@ export const OrdersScreen = () => {
             const shipStatus = item.shipping_status || item.estado_envio || 'pending';
             const trackCode = item.tracking_code || item.codigo_rastreo;
 
+            const isItemShipped = shipStatus === 'shipped' || shipStatus === 'enviado';
+
             return (
               <View key={idx} style={styles.itemRow}>
-                <View style={styles.bullet} />
+                <View style={[
+                  styles.itemIconBox, 
+                  { 
+                    backgroundColor: isItemShipped ? '#16A34A' : '#EA580C',
+                    shadowColor: isItemShipped ? '#16A34A' : '#EA580C' 
+                  }
+                ]}>
+                  <Ionicons name="cube" size={20} color="#FFFFFF" />
+                </View>
                 <View style={styles.itemDetails}>
                   <Text style={styles.itemName} numberOfLines={1}>{itemName}</Text>
                   <Text style={styles.itemSub}>
@@ -142,67 +154,97 @@ export const OrdersScreen = () => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F3F4F6' },
+  container: { flex: 1, backgroundColor: '#F1F5F9' }, 
   listContent: { padding: 20, paddingBottom: 40 },
   orderCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 20,
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20, 
     padding: 20,
-    marginBottom: 20,
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: '#E2E8F0',
+    borderLeftWidth: 8,
     shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.06,
-    shadowRadius: 15,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.08,
+    shadowRadius: 10,
     elevation: 4,
-    borderLeftWidth: 6,
-    borderLeftColor: '#EA580C', // Signature orange accent
   },
   orderHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
     borderBottomWidth: 1,
-    borderBottomColor: '#F3F4F6',
+    borderBottomColor: '#E2E8F0',
     paddingBottom: 14,
   },
-  orderId: { fontSize: 14, fontWeight: '900', color: '#0F172A', maxWidth: width * 0.5 },
-  orderDate: { fontSize: 12, color: '#64748B', marginTop: 4, fontWeight: '500' },
-  statusBadge: { paddingHorizontal: 8, paddingVertical: 3, borderRadius: 6 },
-  statusProcessing: { backgroundColor: '#eff6ff' },
-  statusShipped: { backgroundColor: '#dcfce7' },
-  statusText: { fontSize: 10, fontWeight: 'bold' },
-  statusProcessingText: { color: '#2563EB' },
+  orderId: { fontSize: 15, fontWeight: '900', color: '#111827', maxWidth: width * 0.5 },
+  orderDate: { fontSize: 13, color: '#475569', marginTop: 4, fontWeight: '500' },
+  statusBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
+  statusProcessing: { backgroundColor: '#F1F5F9' },
+  statusShipped: { backgroundColor: '#DCFCE7' },
+  statusText: { fontSize: 11, fontWeight: '800' },
+  statusProcessingText: { color: '#475569' },
   statusShippedText: { color: '#166534' },
-  itemsList: { paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#f1f5f9' },
-  itemRow: { flexDirection: 'row', marginBottom: 10, alignItems: 'flex-start' },
-  bullet: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#EA580C', marginTop: 5, marginRight: 8 },
+  itemsList: { paddingVertical: 12 },
+  itemRow: { 
+    flexDirection: 'row', 
+    marginBottom: 12, 
+    alignItems: 'center',
+    backgroundColor: '#F8FAFC',
+    padding: 14,
+    borderRadius: 14,
+    borderWidth: 1,
+    borderColor: '#F1F5F9'
+  },
+  itemIconBox: {
+    width: 44,
+    height: 44,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 14,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 2,
+  },
   itemDetails: { flex: 1 },
-  itemName: { fontSize: 13, fontWeight: 'bold', color: '#0f172a' },
-  itemSub: { fontSize: 11, color: '#64748b', marginTop: 1 },
-  shippingStateRow: { flexDirection: 'row', marginTop: 4, alignItems: 'center' },
-  shippingLabel: { fontSize: 11, color: '#64748b' },
-  shippingVal: { fontSize: 11, fontWeight: 'bold' },
+  itemName: { fontSize: 14, fontWeight: '800', color: '#111827' },
+  itemSub: { fontSize: 12, color: '#475569', marginTop: 2 },
+  shippingStateRow: { flexDirection: 'row', marginTop: 6, alignItems: 'center' },
+  shippingLabel: { fontSize: 12, color: '#475569' },
+  shippingVal: { fontSize: 12, fontWeight: '800' },
   trackingBox: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#F9FAFB',
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 8,
-    borderWidth: 0,
+    backgroundColor: '#EFF6FF', 
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#BFDBFE', 
     alignSelf: 'flex-start',
-    marginTop: 8,
+    marginTop: 10,
   },
-  trackingText: { fontSize: 10, color: '#2563EB', marginLeft: 6, fontWeight: '500' },
-  trackingCode: { fontWeight: 'bold', textDecorationLine: 'underline' },
-  orderFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingTop: 14 },
+  trackingText: { fontSize: 11, color: '#1D4ED8', marginLeft: 8, fontWeight: '700' }, 
+  trackingCode: { fontWeight: '900', textDecorationLine: 'underline' },
+  orderFooter: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center', 
+    paddingTop: 16, 
+    borderTopWidth: 1, 
+    borderTopColor: '#E2E8F0', 
+    marginTop: 4 
+  },
   paymentBox: { flex: 0.6 },
-  paymentMethod: { fontSize: 12, color: '#475569', fontWeight: '600' },
-  paymentTx: { fontSize: 11, color: '#94a3b8', marginTop: 2 },
+  paymentMethod: { fontSize: 13, color: '#475569', fontWeight: '700' },
+  paymentTx: { fontSize: 12, color: '#64748B', marginTop: 2 },
   totalBox: { flex: 0.4, alignItems: 'flex-end' },
-  totalLabel: { fontSize: 11, color: '#64748B', fontWeight: '600' },
-  totalPrice: { fontSize: 18, fontWeight: '900', color: '#0F172A', marginTop: 2 },
+  totalLabel: { fontSize: 12, color: '#475569', fontWeight: '700', textTransform: 'uppercase' },
+  totalPrice: { fontSize: 20, fontWeight: '900', color: '#111827', marginTop: 2 },
   emptyContainer: { alignItems: 'center', justifyContent: 'center', paddingTop: 80, paddingHorizontal: 20 },
-  emptyTitle: { fontSize: 16, fontWeight: 'bold', color: '#334155', marginTop: 16 },
-  emptySubtitle: { fontSize: 12, color: '#94a3b8', textAlign: 'center', marginTop: 6, lineHeight: 18 },
+  emptyTitle: { fontSize: 18, fontWeight: '900', color: '#111827', marginTop: 16 },
+  emptySubtitle: { fontSize: 14, color: '#64748B', textAlign: 'center', marginTop: 8, lineHeight: 20 },
 });

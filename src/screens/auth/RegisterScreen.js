@@ -97,9 +97,8 @@ export const RegisterScreen = ({ navigation }) => {
     <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
       <StatusBar style="dark" />
       
-      {/* Premium Background Gradient Fade */}
       <LinearGradient
-        colors={['#FED7AA', '#F3F4F6']} // Softer orange fading seamlessly into the light gray base
+        colors={['#FED7AA', '#F3F4F6']}
         style={styles.fadeBackground}
       />
 
@@ -114,7 +113,6 @@ export const RegisterScreen = ({ navigation }) => {
           showsVerticalScrollIndicator={false}
           bounces={false}
         >
-          {/* Header on Background */}
           <View style={styles.header}>
             <View style={styles.logoRow}>
               <Ionicons name="bag-handle" size={32} color="#2563EB" style={{ marginRight: 8 }} />
@@ -123,7 +121,6 @@ export const RegisterScreen = ({ navigation }) => {
             <Text style={styles.subtitle}>Crea tu cuenta gratis</Text>
           </View>
 
-          {/* Form Container */}
           <View style={styles.card}>
             
             <Text style={styles.inputLabel}>Nombre Completo</Text>
@@ -156,7 +153,6 @@ export const RegisterScreen = ({ navigation }) => {
               placeholderTextColor="#9CA3AF"
             />
 
-            {/* Selector de Rol */}
             <Text style={styles.inputLabel}>¿Qué quieres hacer?</Text>
             <View style={styles.roleSelectorRow}>
               <TouchableOpacity
@@ -178,7 +174,6 @@ export const RegisterScreen = ({ navigation }) => {
               </TouchableOpacity>
             </View>
 
-            {/* Campos Condicionales del Vendedor */}
             {esVendedor && (
               <View style={styles.sellerSection}>
                 <View style={styles.dividerContainer}>
@@ -236,7 +231,7 @@ export const RegisterScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F3F4F6', // Light gray background
+    backgroundColor: '#F3F4F6', 
   },
   fadeBackground: {
     position: 'absolute',
@@ -276,7 +271,7 @@ const styles = StyleSheet.create({
   },
   card: {
     marginHorizontal: 24,
-    paddingHorizontal: 16, // Adjusted slightly since there's no visible box border
+    paddingHorizontal: 16,
     paddingVertical: 12,
   },
   inputLabel: {
@@ -316,11 +311,11 @@ const styles = StyleSheet.create({
     backgroundColor: '#F9FAFB',
   },
   roleChipActiveBuyer: {
-    backgroundColor: '#2563EB', // Blue for buyer
+    backgroundColor: '#2563EB', 
     borderColor: '#2563EB',
   },
   roleChipActiveSeller: {
-    backgroundColor: '#EA580C', // Orange for seller
+    backgroundColor: '#EA580C', 
     borderColor: '#EA580C',
   },
   roleChipText: {
@@ -370,7 +365,7 @@ const styles = StyleSheet.create({
     marginTop: 24,
   },
   loginLinkText: {
-    color: '#2563EB', // Blue link
+    color: '#2563EB',
     fontSize: 14,
     fontWeight: '600',
   },

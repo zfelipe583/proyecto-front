@@ -16,7 +16,6 @@ export const AppNavigator = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {isLoggedIn ? (
-          // Le pasamos el rol como prop al navegador principal
           <Stack.Screen name="App">
             {(props) => <MainTabNavigator {...props} userRole={userRole} />}
           </Stack.Screen>

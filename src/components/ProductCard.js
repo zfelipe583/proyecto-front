@@ -16,7 +16,6 @@ export const ProductCard = ({ product, onPress }) => {
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <Image source={{ uri: imageUri }} style={styles.image} />
       
-      {/* Category Badge */}
       <View style={styles.categoryBadge}>
         <Text style={styles.categoryText}>{category}</Text>
       </View>
@@ -29,7 +28,6 @@ export const ProductCard = ({ product, onPress }) => {
             ${price.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
           </Text>
 
-          {/* Stock Tag */}
           {isOutOfStock ? (
             <View style={[styles.stockBadge, styles.stockAlert]}>
               <Text style={[styles.stockText, { color: '#991b1b' }]}>Agotado</Text>
@@ -52,54 +50,56 @@ export const ProductCard = ({ product, onPress }) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#ffffff',
-    borderRadius: 20, // More rounded, modern
+    borderRadius: 18,
     margin: 8,
     width: width / 2 - 20,
+    borderWidth: 0, 
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.06,
-    shadowRadius: 12,
-    elevation: 3,
-    borderWidth: 0, // No border for minimalist look
+    shadowOpacity: 0.08,
+    shadowRadius: 15,
+    elevation: 4,
     overflow: 'hidden'
   },
   image: {
     width: '100%',
-    height: 150, // Much taller for visual impact
-    backgroundColor: '#F3F4F6',
+    height: 180,
+    backgroundColor: '#F9FAFB',
     resizeMode: 'cover',
   },
   categoryBadge: {
     position: 'absolute',
-    top: 10,
-    left: 10,
-    backgroundColor: '#2563EB', // Blue brand
+    top: 12,
+    left: 12,
+    backgroundColor: '#F3F4F6',
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
   },
   categoryText: {
-    fontSize: 9,
-    fontWeight: 'bold',
-    color: '#ffffff',
+    fontSize: 10,
+    fontWeight: '700',
+    color: '#111827',
+    letterSpacing: 0.5,
   },
   infoContainer: {
     padding: 12,
   },
   title: {
-    fontSize: 13,
-    fontWeight: '800',
-    color: '#111827'
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 4,
   },
   priceRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 6,
   },
   price: {
-    fontSize: 15,
-    color: '#EA580C', // Orange brand
+    fontSize: 16,
+    color: '#EA580C',
     fontWeight: '900'
   },
   stockBadge: {

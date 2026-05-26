@@ -37,7 +37,6 @@ export const DetailScreen = ({ route, navigation }) => {
   const stock = product.stock !== undefined ? product.stock : 5;
   const isOutOfStock = stock <= 0;
 
-  // Manejo de carrusel de imágenes
   const [activeImageIndex, setActiveImageIndex] = React.useState(0);
   const images = product.images && product.images.length > 0 
     ? product.images 
@@ -49,7 +48,6 @@ export const DetailScreen = ({ route, navigation }) => {
     setActiveImageIndex(index);
   };
 
-  // Comprobar cantidad actual en carrito
   const cartItem = cart.items.find(item => item.product_id === product._id);
   const quantityInCart = cartItem ? cartItem.quantity : 0;
 
@@ -80,7 +78,6 @@ export const DetailScreen = ({ route, navigation }) => {
       <StatusBar style="dark" />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         
-        {/* Imagen del Producto (Carrusel) */}
         <View style={styles.imageContainer}>
           <ScrollView
             horizontal
@@ -94,7 +91,6 @@ export const DetailScreen = ({ route, navigation }) => {
             ))}
           </ScrollView>
 
-          {/* Dot Indicators */}
           {images.length > 1 && (
             <View style={styles.indicatorContainer}>
               {images.map((_, idx) => (
@@ -110,7 +106,6 @@ export const DetailScreen = ({ route, navigation }) => {
           )}
         </View>
 
-        {/* Detalles Principales */}
         <View style={styles.detailsContainer}>
           <View style={styles.categoryRow}>
             <Text style={styles.categoryText}>{category}</Text>
@@ -122,7 +117,6 @@ export const DetailScreen = ({ route, navigation }) => {
 
           <Text style={styles.productName}>{name}</Text>
 
-          {/* Precio y Stock */}
           <View style={styles.priceStockRow}>
             <Text style={styles.productPrice}>
               ${price.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
@@ -143,13 +137,11 @@ export const DetailScreen = ({ route, navigation }) => {
 
           <View style={styles.divider} />
 
-          {/* Descripción */}
           <Text style={styles.sectionTitle}>Descripción</Text>
           <Text style={styles.productDescription}>{description}</Text>
 
           <View style={styles.divider} />
 
-          {/* Información del Vendedor */}
           <Text style={styles.sectionTitle}>Información del Vendedor</Text>
           <View style={styles.sellerCard}>
             <View style={styles.sellerAvatar}>
@@ -171,7 +163,6 @@ export const DetailScreen = ({ route, navigation }) => {
             </View>
           </View>
 
-          {/* Nota de devolución */}
           <View style={styles.infoAlert}>
             <Ionicons name="information-circle-outline" size={18} color="#0284c7" />
             <Text style={styles.infoAlertText}>
@@ -182,7 +173,6 @@ export const DetailScreen = ({ route, navigation }) => {
         </View>
       </ScrollView>
 
-      {/* Panel Inferior Fijo de Acción */}
       <View style={styles.bottomBar}>
         <View style={styles.bottomBarPriceInfo}>
           <Text style={styles.bottomPriceLabel}>Total aproximado</Text>
@@ -211,14 +201,14 @@ const styles = StyleSheet.create({
   scrollContent: { paddingBottom: 110 },
   imageContainer: {
     width: width,
-    height: 380, // Even taller for dramatic effect
+    height: 380, 
     backgroundColor: '#0F172A',
     position: 'relative',
   },
   productImage: { width: width, height: 380, resizeMode: 'cover', opacity: 0.95 },
   indicatorContainer: {
     position: 'absolute',
-    bottom: 75, // Moved up to clear the massive card overlap
+    bottom: 75, 
     flexDirection: 'row',
     alignSelf: 'center',
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
@@ -236,9 +226,9 @@ const styles = StyleSheet.create({
   detailsContainer: { 
     padding: 24, 
     backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 40, // Huge radius
+    borderTopLeftRadius: 40, 
     borderTopRightRadius: 40,
-    marginTop: -60, // Massive overlapping bottom-sheet effect
+    marginTop: -60, 
     paddingBottom: 40,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: -8 },
@@ -254,7 +244,7 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 12,
     fontWeight: '800',
-    color: '#2563EB', // Blue brand
+    color: '#2563EB', 
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
@@ -272,7 +262,7 @@ const styles = StyleSheet.create({
     color: '#854d0e',
   },
   productName: {
-    fontSize: 26, // Massive title
+    fontSize: 26, 
     fontWeight: '900',
     color: '#0F172A',
     marginTop: 10,
@@ -334,16 +324,16 @@ const styles = StyleSheet.create({
   },
   bottomBar: {
     position: 'absolute',
-    bottom: 20, // Make it floating
+    bottom: 20, 
     left: 20,
     right: 20,
-    backgroundColor: '#0F172A', // Dark mode floating bar
+    backgroundColor: '#0F172A', 
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingVertical: 12,
-    borderRadius: 24, // Pill shape
+    borderRadius: 24, 
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.2,

@@ -46,27 +46,25 @@ export const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar style="dark" />
       
-      {/* Premium Dark Header */}
-      <View style={styles.darkHeader}>
+      <View style={styles.headerArea}>
         <View style={styles.welcomeSection}>
           <View>
-            <Text style={styles.helloText}>Hola, {user?.name || 'Comprador'} 👋</Text>
-            <Text style={styles.subWelcome}>¿Qué deseas adquirir hoy?</Text>
+            <Text style={styles.helloText}>Descubrir</Text>
+            <Text style={styles.subWelcome}>Hola, {user?.name || 'Comprador'}</Text>
           </View>
           <View style={styles.headerRight}>
             <TouchableOpacity style={styles.avatarButton}>
-              <Ionicons name="person-circle" size={44} color="#EA580C" />
+              <Ionicons name="person-circle-outline" size={44} color="#111827" />
             </TouchableOpacity>
             <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-              <Ionicons name="log-out-outline" size={20} color="#EF4444" />
+              <Ionicons name="log-out-outline" size={24} color="#111827" />
             </TouchableOpacity>
           </View>
         </View>
       </View>
 
-      {/* Floating Overlapping Search Input */}
       <View style={styles.searchContainer}>
         <Ionicons name="search" size={20} color="#94a3b8" style={styles.searchIcon} />
         <TextInput
@@ -83,7 +81,6 @@ export const HomeScreen = ({ navigation }) => {
         )}
       </View>
 
-      {/* Categories chips list */}
       <View style={styles.categoryContainer}>
         <FlatList
           data={categories}
@@ -137,69 +134,53 @@ export const HomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#F3F4F6' },
-  darkHeader: {
-    backgroundColor: '#0F172A',
-    paddingTop: 55,
-    paddingBottom: 45, // Extra space for overlap
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
-    shadowColor: '#EA580C',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.15,
-    shadowRadius: 20,
-    elevation: 10,
-    zIndex: 10,
+  container: { flex: 1, backgroundColor: '#F8FAFC' }, 
+  headerArea: {
+    backgroundColor: '#F8FAFC',
+    paddingTop: 16, 
+    paddingBottom: 16,
+    paddingHorizontal: 20,
   },
   welcomeSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 20,
   },
   helloText: {
-    fontSize: 24,
+    fontSize: 34,
     fontWeight: '900',
-    color: '#FFFFFF',
-    letterSpacing: -0.5,
+    color: '#111827',
+    letterSpacing: -1,
   },
   subWelcome: {
-    fontSize: 14,
-    color: '#94A3B8',
+    fontSize: 16,
+    color: '#6B7280',
     marginTop: 4,
     fontWeight: '500',
   },
   avatarButton: {
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1E293B',
-    borderRadius: 22,
   },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   logoutBtn: {
-    marginLeft: 12,
-    padding: 8,
-    backgroundColor: 'rgba(239, 68, 68, 0.1)', // Subtle red
-    borderRadius: 10,
+    marginLeft: 16,
+    justifyContent: 'center',
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#FFFFFF', 
     marginHorizontal: 20,
     paddingHorizontal: 16,
-    height: 56, // Taller and more prominent
-    borderRadius: 16, // Smoother corners
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.08,
-    shadowRadius: 16,
-    elevation: 8,
-    marginTop: -28, // OVERLAPS the dark header
-    zIndex: 20,
+    height: 52,
+    borderRadius: 16, 
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: '#E2E8F0', 
   },
   searchIcon: {
     marginRight: 8,
@@ -210,7 +191,7 @@ const styles = StyleSheet.create({
     color: '#1e293b',
   },
   categoryContainer: {
-    marginTop: 24, // Space from search bar
+    marginTop: 24,
     marginBottom: 8,
   },
   categoryListContent: {
@@ -219,37 +200,31 @@ const styles = StyleSheet.create({
   categoryChip: {
     paddingHorizontal: 18,
     paddingVertical: 10,
-    borderRadius: 20,
-    backgroundColor: '#ffffff',
-    marginRight: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 6,
-    elevation: 2,
+    borderRadius: 12, 
+    backgroundColor: '#FFFFFF',
+    marginRight: 12,
+    borderWidth: 1,
+    borderColor: '#E2E8F0', 
   },
   activeCategoryChip: {
-    backgroundColor: '#EA580C',
-    shadowColor: '#EA580C',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
+    backgroundColor: '#EA580C', 
+    borderColor: '#EA580C',
   },
   categoryChipText: {
     fontSize: 14,
-    color: '#64748B',
-    fontWeight: '700',
+    color: '#475569',
+    fontWeight: '600',
   },
   activeCategoryChipText: {
     color: '#ffffff',
   },
   headerTitle: { 
-    fontSize: 20, 
+    fontSize: 22, 
     fontWeight: '900', 
-    marginVertical: 16, 
+    marginTop: 8, 
+    marginBottom: 16, 
     paddingLeft: 20, 
-    color: '#0F172A',
+    color: '#111827',
     letterSpacing: -0.5,
   },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },

@@ -7,22 +7,19 @@ import { StatusBar } from 'expo-status-bar';
 export const AdminScreen = () => {
   const { user, orders, products, createNewProduct, updateExistingProduct, updateShippingDetails, logout } = useApp();
   
-  // Estados para CRUD de tu formulario original
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
-  const [stock, setStock] = useState('5'); // Nuevo campo necesario para MongoDB
-  const [category, setCategory] = useState('Hardware'); // Por defecto
-  const [imagenesInput, setImagenesInput] = useState(''); // URLs separadas por coma
+  const [stock, setStock] = useState('5'); 
+  const [category, setCategory] = useState('Hardware'); 
+  const [imagenesInput, setImagenesInput] = useState(''); 
 
-  const [editingProduct, setEditingProduct] = useState(null); // Producto cargado para edición
+  const [editingProduct, setEditingProduct] = useState(null); 
   const [trackingCodes, setTrackingCodes] = useState({});
   const [creating, setCreating] = useState(false);
 
-  // Filtrar productos que pertenecen a este vendedor (Jaime)
   const myProducts = products.filter(p => (p.seller_id || p.vendedor_id) === user?._id);
 
-  // Calcular métricas del vendedor
   const totalSales = orders.reduce((sum, order) => {
     const myItems = order.items.filter(item => (item.seller_id || item.vendedor_id) === user?._id);
     const myItemsSum = myItems.reduce((acc, curr) => {
@@ -106,12 +103,11 @@ export const AdminScreen = () => {
       } else {
         await createNewProduct({
           ...productData,
-          seller_id: user._id // vendedor actual
+          seller_id: user._id 
         });
         Alert.alert("¡Producto Creado!", `Se agregó "${name}" al inventario.`);
       }
 
-      // Limpiar formulario
       setName('');
       setPrice('');
       setDescription('');
@@ -170,7 +166,6 @@ export const AdminScreen = () => {
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <StatusBar style="dark" />
 
-      {/* Encabezado del Comercio */}
       <View style={styles.sellerHeader}>
         <View style={styles.storeLogo}>
           <Ionicons name="storefront" size={24} color="#b45309" />
@@ -185,7 +180,6 @@ export const AdminScreen = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Métricas */}
       <View style={styles.metricsGrid}>
         <View style={styles.metricCard}>
           <Text style={styles.metricLabel}>Ventas Totales</Text>
@@ -201,7 +195,6 @@ export const AdminScreen = () => {
         </View>
       </View>
 
-      {/* Gestión de Pedidos Recibidos */}
       <Text style={styles.sectionTitle}>Pedidos Recibidos</Text>
       {orders.length === 0 ? (
         <View style={styles.emptyCard}>
@@ -278,7 +271,6 @@ export const AdminScreen = () => {
         })
       )}
 
-      {/* CRUD: Crear / Editar Producto */}
       <Text style={styles.sectionTitle}>
         {editingProduct ? `Editar Producto: ${editingProduct.nombre || editingProduct.name}` : 'Agregar Producto al Inventario'}
       </Text>
@@ -382,7 +374,6 @@ export const AdminScreen = () => {
         )}
       </View>
 
-      {/* Lista del catálogo en stock */}
       <Text style={styles.sectionTitle}>Productos en Venta ({myProducts.length})</Text>
       {myProducts.map((prod) => (
         <View key={prod._id} style={styles.catalogItem}>
@@ -394,7 +385,6 @@ export const AdminScreen = () => {
             <Text style={styles.catalogItemCat}>Categoría: {prod.category?.name || prod.categoria?.nombre || 'General'}</Text>
           </View>
           
-          {/* Botón de Editar */}
           <TouchableOpacity 
             style={styles.editProductIconBtn}
             onPress={() => handleStartEdit(prod)}
@@ -419,9 +409,9 @@ const styles = StyleSheet.create({
   sellerHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#0F172A', // Dark mode header
+    backgroundColor: '#0F172A', 
     padding: 20,
-    borderRadius: 24, // Huge radius
+    borderRadius: 24, 
     borderWidth: 0,
     marginBottom: 20,
     shadowColor: '#000',
@@ -434,7 +424,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 14,
-    backgroundColor: '#1E293B', // Darker inner box
+    backgroundColor: '#1E293B', 
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 14,
@@ -468,7 +458,7 @@ const styles = StyleSheet.create({
   orderCard: {
     backgroundColor: '#ffffff', borderRadius: 20, padding: 16, borderWidth: 0, marginBottom: 16,
     shadowColor: '#000', shadowOffset: { width: 0, height: 6 }, shadowOpacity: 0.05, shadowRadius: 12, elevation: 3,
-    borderLeftWidth: 6, borderLeftColor: '#2563EB', // Blue accent for received orders
+    borderLeftWidth: 6, borderLeftColor: '#2563EB', 
   },
   orderCardHeader: { flexDirection: 'row', justifyContent: 'space-between', borderBottomWidth: 1, borderBottomColor: '#F3F4F6', paddingBottom: 12, marginBottom: 12 },
   orderDate: { fontSize: 13, fontWeight: '900', color: '#0F172A' },

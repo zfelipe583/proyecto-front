@@ -38,9 +38,7 @@ export const AppProvider = ({ children }) => {
     if (!user) return;
     setLoading(true);
     try {
-      // 1. Cargar Pedidos (si es vendedor, de su tienda; si es comprador, los que hizo él)
       await fetchUserOrders();
-      // 2. Cargar Carrito (solo si es comprador)
       if (!user.is_seller) {
         const cartData = await apiService.getCart(user._id);
         setCart(cartData);
@@ -67,7 +65,6 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  // Autenticación de Personas (Jaime o Carlos)
   const loginPersona = async (email, password) => {
     setLoading(true);
     try {
@@ -99,7 +96,6 @@ export const AppProvider = ({ children }) => {
     setUser(null);
   };
 
-  // Operaciones del Carrito (Mapeado a Mongoose: product_id, unit_price, quantity)
   const addToCart = async (product, quantity = 1) => {
     if (!user || user.is_seller) return;
     
@@ -155,14 +151,11 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  // Crear Pedido (Mapeado a Mongoose: buyer_id, shipping_address, items: [{ product_id, seller_id, price_paid, shipping_status }])
   const processCheckout = async (direccionEnvio) => {
     if (!user || cart.items.length === 0) return;
 
-    // Sumar el total
     const total = cart.items.reduce((sum, item) => sum + (item.unit_price * item.quantity), 0);
 
-    // Mapear items al esquema de Pedidos de la base de datos
     const orderItems = cart.items.map(item => {
       const originalProd = products.find(p => p._id === item.product_id);
       return {
@@ -193,7 +186,6 @@ export const AppProvider = ({ children }) => {
       const newOrder = await apiService.createOrder(orderData);
       setOrders(prev => [newOrder, ...prev]);
       
-      // Actualizar localmente el stock de los productos inmediatamente
       setProducts(prevProducts => {
         return prevProducts.map(p => {
           const orderedItem = orderItems.find(item => item.product_id === p._id);
@@ -207,8 +199,8 @@ export const AppProvider = ({ children }) => {
         });
       });
 
-      setCart({ items: [] }); // Vaciar localmente
-      await fetchProductsList(); // Actualizar stock de los productos
+      setCart({ items: [] });
+      await fetchProductsList();
       return newOrder;
     } catch (error) {
       console.error('Error processing checkout:', error);
@@ -218,13 +210,11 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  // Acciones del Vendedor (Jaime)
   const updateShippingDetails = async (orderId, productId, status, trackingCode = null) => {
     if (!user || !user.is_seller) return;
     setLoading(true);
     try {
       await apiService.updateShippingStatus(orderId, productId, status, trackingCode);
-      // Recargar pedidos del vendedor para actualizar la vista
       await fetchUserOrders();
     } catch (error) {
       console.error('Error updating shipping status:', error);
@@ -233,7 +223,6 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  // Crear Producto Nuevo (Vendedor Jaime)
   const createNewProduct = async (productData) => {
     if (!user || !user.is_seller) return;
     setLoading(true);
@@ -242,7 +231,7 @@ export const AppProvider = ({ children }) => {
         seller_id: user._id,
         ...productData,
       });
-      await fetchProductsList(); // Recargar productos locales
+      await fetchProductsList();
       return newProduct;
     } catch (error) {
       console.error('Error creating product:', error);
@@ -252,13 +241,12 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  // Editar Producto Existente (Vendedor Jaime)
   const updateExistingProduct = async (productId, productData) => {
     if (!user || !user.is_seller) return;
     setLoading(true);
     try {
       const updatedProduct = await apiService.updateProduct(productId, productData);
-      await fetchProductsList(); // Recargar productos locales
+      await fetchProductsList();
       return updatedProduct;
     } catch (error) {
       console.error('Error updating product:', error);

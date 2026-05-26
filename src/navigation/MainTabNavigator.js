@@ -17,19 +17,19 @@ const ShopStackScreen = () => (
   <ShopStack.Navigator
     screenOptions={{
       headerStyle: {
-        backgroundColor: '#EA580C', // Brand orange
+        backgroundColor: '#EA580C',
         borderBottomWidth: 0,
         elevation: 0,
         shadowOpacity: 0,
       },
       headerTitleStyle: {
         fontWeight: '900',
-        color: '#FFFFFF', // White text
+        color: '#FFFFFF',
       },
-      headerTintColor: '#FFFFFF', // White icons/back button
+      headerTintColor: '#FFFFFF',
     }}
   >
-    <ShopStack.Screen name="Tienda Principal" component={HomeScreen} options={{ title: 'E-Commerce' }} />
+    <ShopStack.Screen name="Tienda Principal" component={HomeScreen} options={{ title: 'MarketPlace' }} />
     <ShopStack.Screen name="ProductDetail" component={DetailScreen} options={{ title: 'Detalle del Producto' }} />
   </ShopStack.Navigator>
 );
@@ -54,7 +54,7 @@ export const MainTabNavigator = ({ userRole }) => {
           }
           return <Ionicons name={iconName} size={size - 2} color={color} />;
         },
-        tabBarActiveTintColor: '#EA580C', // Brand orange
+        tabBarActiveTintColor: '#EA580C',
         tabBarInactiveTintColor: '#94a3b8',
         tabBarStyle: { 
           paddingBottom: insets.bottom > 0 ? insets.bottom : 8, 
@@ -69,14 +69,14 @@ export const MainTabNavigator = ({ userRole }) => {
           elevation: 4,
         },
         headerStyle: {
-          backgroundColor: '#EA580C', // Brand orange
+          backgroundColor: '#EA580C',
           borderBottomWidth: 0,
           elevation: 0,
           shadowOpacity: 0,
         },
         headerTitleStyle: {
           fontWeight: '900',
-          color: '#FFFFFF', // White text
+          color: '#FFFFFF',
         },
       })}
     >
@@ -104,7 +104,7 @@ export const MainTabNavigator = ({ userRole }) => {
         <Tab.Screen 
           name="AdminTab" 
           component={AdminScreen} 
-          options={{ title: 'Admin / Panel' }} 
+          options={{ title: 'Admin Panel' }} 
         />
       )}
     </Tab.Navigator>

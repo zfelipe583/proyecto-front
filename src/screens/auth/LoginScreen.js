@@ -55,9 +55,8 @@ export const LoginScreen = ({ navigation }) => {
     <SafeAreaView style={styles.safeArea} edges={['top', 'bottom']}>
       <StatusBar style="dark" />
       
-      {/* Premium Background Gradient Fade */}
       <LinearGradient
-        colors={['#FED7AA', '#F3F4F6']} // Softer orange fading seamlessly into the light gray base
+        colors={['#FED7AA', '#F3F4F6']} 
         style={styles.fadeBackground}
       />
 
@@ -73,7 +72,6 @@ export const LoginScreen = ({ navigation }) => {
           bounces={false}
           style={{ opacity: fadeAnim }}
         >
-          {/* Header on Background */}
           <View style={styles.header}>
             <View style={styles.logoRow}>
               <Ionicons name="bag-handle" size={32} color="#2563EB" style={{ marginRight: 8 }} />
@@ -82,7 +80,6 @@ export const LoginScreen = ({ navigation }) => {
             <Text style={styles.subtitle}>Inicia sesión para comprar</Text>
           </View>
 
-          {/* Elevated Premium Card */}
           <View style={styles.card}>
             
             <Text style={styles.inputLabel}>Tu cuenta</Text>
@@ -142,7 +139,6 @@ export const LoginScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
-          {/* Trust Footer */}
           <View style={styles.footer}>
             <View style={styles.trustItem}>
               <Ionicons name="shield-checkmark" size={18} color="#EA580C" />
@@ -163,27 +159,27 @@ export const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: '#F3F4F6', // Light gray background
+    backgroundColor: '#F3F4F6',
   },
   fadeBackground: {
     position: 'absolute',
     top: 0,
     left: 0,
     right: 0,
-    height: height * 0.45, // Gives enough room to fade perfectly into the gray
+    height: height * 0.45, 
   },
   container: { 
     flex: 1, 
   },
   scrollContent: {
     flexGrow: 1,
-    paddingTop: 40, // Reduced to help lift the header
+    paddingTop: 40,
     paddingBottom: 30,
     justifyContent: 'center', 
   },
   header: {
     alignItems: 'center',
-    marginBottom: 60, // Increased to push card down and title up
+    marginBottom: 60,
   },
   logoRow: {
     flexDirection: 'row',
@@ -192,7 +188,7 @@ const styles = StyleSheet.create({
   logoText: { 
     fontSize: 32, 
     fontWeight: '900', 
-    color: '#EA580C', // Orange
+    color: '#EA580C',
     letterSpacing: -1,
   },
   subtitle: {
@@ -203,7 +199,7 @@ const styles = StyleSheet.create({
   },
   card: {
     marginHorizontal: 24,
-    paddingHorizontal: 16, // Adjusted slightly since there's no visible box border
+    paddingHorizontal: 16, 
     paddingVertical: 12,
   },
   inputLabel: {
@@ -232,7 +228,7 @@ const styles = StyleSheet.create({
     marginTop: -8,
   },
   forgotPasswordText: {
-    color: '#2563EB', // Blue link
+    color: '#2563EB',
     fontSize: 14,
     fontWeight: '600',
   },
