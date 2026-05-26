@@ -169,6 +169,25 @@ export const apiService = {
     }
   },
 
+  register: async (userData) => {
+    if (USE_MOCK) {
+      await delay();
+      const exists = mockUsuarios.some(u => u.email === userData.email);
+      if (exists) throw new Error('El correo electrónico ya está registrado');
+      
+      const newUser = {
+        _id: 'user_' + Math.random().toString(36).substring(2, 9),
+        fecha_registro: new Date().toISOString(),
+        ...userData,
+      };
+      mockUsuarios.push(newUser);
+      return newUser;
+    } else {
+      const response = await api.post('/auth/register', userData);
+      return response.data;
+    }
+  },
+
   // --- PRODUCTOS ---
   getProducts: async () => {
     if (USE_MOCK) {

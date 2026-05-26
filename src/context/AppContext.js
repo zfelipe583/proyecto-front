@@ -82,6 +82,19 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const registerPersona = async (userData) => {
+    setLoading(true);
+    try {
+      const newUser = await apiService.register(userData);
+      return newUser;
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const logout = () => {
     setUser(null);
   };
@@ -246,6 +259,7 @@ export const AppProvider = ({ children }) => {
       orders,
       loading,
       loginPersona,
+      registerPersona,
       logout,
       addToCart,
       removeFromCart,
