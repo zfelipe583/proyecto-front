@@ -4,7 +4,7 @@ import axios from 'axios';
 // CONFIGURACIÓN DE CONEXIÓN CON BACKEND/DB
 // ==========================================
 // 1. Cambia 'API_URL' por la dirección de tu Express Backend (ej. http://192.168.1.100:4000/api)
-export const API_URL = 'http://192.168.1.163:4000/api';
+export const API_URL = 'http://10.86.77.32:4000/api';
 
 // 2. Cambia 'USE_MOCK' a false para consumir tu backend Express real
 export const USE_MOCK = false;

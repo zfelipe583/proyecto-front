@@ -52,32 +52,31 @@ export const ProductCard = ({ product, onPress }) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#ffffff',
-    borderRadius: 16,
+    borderRadius: 20, // More rounded, modern
     margin: 8,
     width: width / 2 - 20,
-    shadowColor: '#0f172a',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.03,
-    shadowRadius: 8,
-    elevation: 2,
-    borderWidth: 1,
-    borderColor: '#f1f5f9',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    elevation: 3,
+    borderWidth: 0, // No border for minimalist look
     overflow: 'hidden'
   },
   image: {
     width: '100%',
-    height: 120,
-    backgroundColor: '#f8fafc',
+    height: 150, // Much taller for visual impact
+    backgroundColor: '#F3F4F6',
     resizeMode: 'cover',
   },
   categoryBadge: {
     position: 'absolute',
-    top: 8,
-    left: 8,
-    backgroundColor: 'rgba(15, 23, 42, 0.65)',
+    top: 10,
+    left: 10,
+    backgroundColor: '#2563EB', // Blue brand
     paddingHorizontal: 8,
-    paddingVertical: 2,
-    borderRadius: 6,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
   categoryText: {
     fontSize: 9,
@@ -89,19 +88,19 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 13,
-    fontWeight: 'bold',
-    color: '#1e293b'
+    fontWeight: '800',
+    color: '#111827'
   },
   priceRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 8,
+    marginTop: 10,
   },
   price: {
-    fontSize: 13,
-    color: '#6366f1',
-    fontWeight: '700'
+    fontSize: 15,
+    color: '#EA580C', // Orange brand
+    fontWeight: '900'
   },
   stockBadge: {
     paddingHorizontal: 6,

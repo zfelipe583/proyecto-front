@@ -4,6 +4,7 @@ import { ProductCard } from '../../components/ProductCard';
 import { useApp } from '../../context/AppContext';
 import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export const HomeScreen = ({ navigation }) => {
   const { user, products, loading, logout } = useApp();
@@ -45,25 +46,27 @@ export const HomeScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="dark" />
-
-      {/* Greeting Banner */}
-      <View style={styles.welcomeSection}>
-        <View>
-          <Text style={styles.helloText}>Hola, {user?.name || 'Comprador'} 👋</Text>
-          <Text style={styles.subWelcome}>¿Qué deseas adquirir hoy?</Text>
-        </View>
-        <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.avatarButton}>
-            <Ionicons name="person-circle" size={36} color="#6366f1" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
-            <Ionicons name="log-out-outline" size={20} color="#ef4444" />
-          </TouchableOpacity>
+      <StatusBar style="light" />
+      
+      {/* Premium Dark Header */}
+      <View style={styles.darkHeader}>
+        <View style={styles.welcomeSection}>
+          <View>
+            <Text style={styles.helloText}>Hola, {user?.name || 'Comprador'} 👋</Text>
+            <Text style={styles.subWelcome}>¿Qué deseas adquirir hoy?</Text>
+          </View>
+          <View style={styles.headerRight}>
+            <TouchableOpacity style={styles.avatarButton}>
+              <Ionicons name="person-circle" size={44} color="#EA580C" />
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+              <Ionicons name="log-out-outline" size={20} color="#EF4444" />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
 
-      {/* Search Input */}
+      {/* Floating Overlapping Search Input */}
       <View style={styles.searchContainer}>
         <Ionicons name="search" size={20} color="#94a3b8" style={styles.searchIcon} />
         <TextInput
@@ -134,49 +137,69 @@ export const HomeScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#f8fafc' },
+  container: { flex: 1, backgroundColor: '#F3F4F6' },
+  darkHeader: {
+    backgroundColor: '#0F172A',
+    paddingTop: 55,
+    paddingBottom: 45, // Extra space for overlap
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    shadowColor: '#EA580C',
+    shadowOffset: { width: 0, height: 10 },
+    shadowOpacity: 0.15,
+    shadowRadius: 20,
+    elevation: 10,
+    zIndex: 10,
+  },
   welcomeSection: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    paddingBottom: 12,
+    paddingHorizontal: 20,
   },
   helloText: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#0f172a',
+    fontSize: 24,
+    fontWeight: '900',
+    color: '#FFFFFF',
+    letterSpacing: -0.5,
   },
   subWelcome: {
-    fontSize: 12,
-    color: '#64748b',
-    marginTop: 2,
+    fontSize: 14,
+    color: '#94A3B8',
+    marginTop: 4,
+    fontWeight: '500',
   },
   avatarButton: {
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: '#1E293B',
+    borderRadius: 22,
   },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   logoutBtn: {
-    marginLeft: 10,
-    padding: 6,
-    backgroundColor: '#fee2e2',
-    borderRadius: 8,
+    marginLeft: 12,
+    padding: 8,
+    backgroundColor: 'rgba(239, 68, 68, 0.1)', // Subtle red
+    borderRadius: 10,
   },
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#ffffff',
-    marginHorizontal: 16,
-    paddingHorizontal: 12,
-    height: 44,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
+    marginHorizontal: 20,
+    paddingHorizontal: 16,
+    height: 56, // Taller and more prominent
+    borderRadius: 16, // Smoother corners
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 16,
+    elevation: 8,
+    marginTop: -28, // OVERLAPS the dark header
+    zIndex: 20,
   },
   searchIcon: {
     marginRight: 8,
@@ -187,39 +210,47 @@ const styles = StyleSheet.create({
     color: '#1e293b',
   },
   categoryContainer: {
-    marginTop: 14,
-    marginBottom: 4,
+    marginTop: 24, // Space from search bar
+    marginBottom: 8,
   },
   categoryListContent: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 20,
   },
   categoryChip: {
-    paddingHorizontal: 14,
-    paddingVertical: 6,
-    borderRadius: 16,
+    paddingHorizontal: 18,
+    paddingVertical: 10,
+    borderRadius: 20,
     backgroundColor: '#ffffff',
-    borderWidth: 1,
-    borderColor: '#e2e8f0',
-    marginRight: 8,
+    marginRight: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
   },
   activeCategoryChip: {
-    backgroundColor: '#6366f1',
-    borderColor: '#6366f1',
+    backgroundColor: '#EA580C',
+    shadowColor: '#EA580C',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
   categoryChipText: {
-    fontSize: 12,
-    color: '#475569',
-    fontWeight: '600',
+    fontSize: 14,
+    color: '#64748B',
+    fontWeight: '700',
   },
   activeCategoryChipText: {
     color: '#ffffff',
   },
   headerTitle: { 
-    fontSize: 16, 
-    fontWeight: 'bold', 
-    marginVertical: 14, 
-    paddingLeft: 16, 
-    color: '#1e293b' 
+    fontSize: 20, 
+    fontWeight: '900', 
+    marginVertical: 16, 
+    paddingLeft: 20, 
+    color: '#0F172A',
+    letterSpacing: -0.5,
   },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   list: { paddingBottom: 20, paddingHorizontal: 8 },
