@@ -5,7 +5,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { StatusBar } from 'expo-status-bar';
 
 export const AdminScreen = ({ navigation }) => {
-  const { user, orders, products, createNewProduct, updateExistingProduct, updateShippingDetails, logout } = useApp();
+  const { user, orders, products, createNewProduct, updateExistingProduct, deleteExistingProduct, updateShippingDetails, logout } = useApp();
   
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
@@ -56,6 +56,28 @@ export const AdminScreen = ({ navigation }) => {
     setDescription('');
     setStock('5');
     setImagenesInput('');
+  };
+
+  const handleDeleteProduct = (prod) => {
+    Alert.alert(
+      'Eliminar Producto',
+      `¿Estás seguro de que deseas eliminar permanentemente "${prod.name || prod.nombre}"?`,
+      [
+        { text: 'Cancelar', style: 'cancel' },
+        { 
+          text: 'Eliminar', 
+          style: 'destructive', 
+          onPress: async () => {
+            try {
+              await deleteExistingProduct(prod._id);
+              Alert.alert('Eliminado', 'El producto ha sido eliminado correctamente.');
+            } catch (err) {
+              Alert.alert('Error', 'No se pudo eliminar: ' + err.message);
+            }
+          } 
+        }
+      ]
+    );
   };
 
   const handleCreateProduct = async () => {
@@ -393,6 +415,13 @@ export const AdminScreen = ({ navigation }) => {
             onPress={() => handleStartEdit(prod)}
           >
             <Ionicons name="create-outline" size={18} color="#4f46e5" />
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={[styles.editProductIconBtn, { backgroundColor: '#fee2e2' }]}
+            onPress={() => handleDeleteProduct(prod)}
+          >
+            <Ionicons name="trash-outline" size={18} color="#ef4444" />
           </TouchableOpacity>
 
           <View style={[styles.stockBox, prod.stock === 0 ? {backgroundColor: '#fee2e2'} : {backgroundColor: '#f1f5f9'}]}>

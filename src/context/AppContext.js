@@ -273,6 +273,20 @@ export const AppProvider = ({ children }) => {
     }
   };
 
+  const deleteExistingProduct = async (productId) => {
+    if (!user || !user.is_seller) return;
+    setLoading(true);
+    try {
+      await apiService.deleteProduct(productId);
+      await fetchProductsList();
+    } catch (error) {
+      console.warn('Error deleting product:', error.message || error);
+      throw error;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <AppContext.Provider value={{
       user,
@@ -290,7 +304,7 @@ export const AppProvider = ({ children }) => {
       updateShippingDetails,
       createNewProduct,
       updateExistingProduct,
-      updateUser,
+      deleteExistingProduct,
       refreshData: loadUserData,
     }}>
       {children}

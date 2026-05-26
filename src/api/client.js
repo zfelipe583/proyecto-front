@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const API_URL = 'http://172.23.90.32:4000/api';
+export const API_URL = 'http://172.23.90.190:4000/api';
 
 export const USE_MOCK = false;
 
@@ -247,7 +247,23 @@ export const apiService = {
       throw new Error('Producto no encontrado');
     } else {
       // El backend usa PATCH /api/products/:id para actualizar
-      const response = await api.patch(`/products/${productId}`, productData);
+      const response = await api.patch(`products/${productId}`, productData);
+      return response.data;
+    }
+  },
+
+  deleteProduct: async (productId) => {
+    if (USE_MOCK) {
+      await delay();
+      const index = mockProductos.findIndex(p => p._id === productId);
+      if (index !== -1) {
+        mockProductos.splice(index, 1);
+        return { success: true };
+      }
+      throw new Error('Producto no encontrado');
+    } else {
+      // El backend usa DELETE /api/products/:id
+      const response = await api.delete(`products/${productId}`);
       return response.data;
     }
   },
