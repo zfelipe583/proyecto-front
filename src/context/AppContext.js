@@ -75,7 +75,7 @@ export const AppProvider = ({ children }) => {
       setUser(data.user);
       return data.user;
     } catch (error) {
-      console.error('Login error:', error);
+      console.warn('Login validation:', error.message || error);
       throw error;
     } finally {
       setLoading(false);
@@ -88,7 +88,7 @@ export const AppProvider = ({ children }) => {
       const newUser = await apiService.register(userData);
       return newUser;
     } catch (error) {
-      console.error('Registration error:', error);
+      console.warn('Registration validation:', error.message || error);
       throw error;
     } finally {
       setLoading(false);
