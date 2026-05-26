@@ -15,7 +15,8 @@ export const OrdersScreen = () => {
   };
 
   const renderOrderItem = ({ item: order }) => {
-    const formattedDate = new Date(order.fecha_pedido).toLocaleDateString('es-MX', {
+    const orderDateVal = order.order_date || order.fecha_pedido;
+    const formattedDate = new Date(orderDateVal).toLocaleDateString('es-MX', {
       day: '2-digit',
       month: 'short',
       year: 'numeric',
@@ -32,67 +33,78 @@ export const OrdersScreen = () => {
           </View>
           <View style={[
             styles.statusBadge, 
-            order.estado_general === 'enviado' ? styles.statusShipped : styles.statusProcessing
+            (order.status === 'shipped' || order.estado_general === 'enviado') ? styles.statusShipped : styles.statusProcessing
           ]}>
             <Text style={[
               styles.statusText,
-              order.estado_general === 'enviado' ? styles.statusShippedText : styles.statusProcessingText
+              (order.status === 'shipped' || order.estado_general === 'enviado') ? styles.statusShippedText : styles.statusProcessingText
             ]}>
-              {order.estado_general === 'enviado' ? 'Enviado' : 'Procesando'}
+              {(order.status === 'shipped' || order.estado_general === 'enviado') ? 'Enviado' : 'Procesando'}
             </Text>
           </View>
         </View>
 
 
         <View style={styles.itemsList}>
-          {order.items.map((item, idx) => (
-            <View key={idx} style={styles.itemRow}>
-              <View style={styles.bullet} />
-              <View style={styles.itemDetails}>
-                <Text style={styles.itemName} numberOfLines={1}>{item.nombre}</Text>
-                <Text style={styles.itemSub}>
-                  Cant: {item.cantidad} x ${item.precio_pagado.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
-                </Text>
-                
-                <View style={styles.shippingStateRow}>
-                  <Text style={styles.shippingLabel}>Envío: </Text>
-                  <Text style={[
-                    styles.shippingVal,
-                    item.estado_envio === 'enviado' ? { color: '#16a34a' } : { color: '#d97706' }
-                  ]}>
-                    {item.estado_envio === 'pendiente_de_envio' ? 'Pendiente de envío' : 'En camino / Enviado'}
-                  </Text>
-                </View>
+          {order.items.map((item, idx) => {
+            const itemName = item.name || item.nombre;
+            const itemQty = item.quantity !== undefined ? item.quantity : (item.cantidad || 0);
+            const itemPrice = item.price_paid !== undefined ? item.price_paid : (item.precio_pagado || 0);
+            const shipStatus = item.shipping_status || item.estado_envio || 'pending';
+            const trackCode = item.tracking_code || item.codigo_rastreo;
 
-                {item.codigo_rastreo ? (
-                  <TouchableOpacity 
-                    style={styles.trackingBox}
-                    onPress={() => copyToClipboard(item.codigo_rastreo, 'Guía de rastreo')}
-                  >
-                    <Ionicons name="car-outline" size={13} color="#4f46e5" />
-                    <Text style={styles.trackingText}>
-                      Guía: <Text style={styles.trackingCode}>{item.codigo_rastreo}</Text> 📋
-                    </Text>
-                  </TouchableOpacity>
-                ) : (
-                  <View style={styles.trackingBox}>
-                    <Ionicons name="hourglass-outline" size={13} color="#64748b" />
-                    <Text style={[styles.trackingText, { color: '#64748b', fontStyle: 'italic' }]}>
-                      Guía: Esperando despacho del vendedor
+            return (
+              <View key={idx} style={styles.itemRow}>
+                <View style={styles.bullet} />
+                <View style={styles.itemDetails}>
+                  <Text style={styles.itemName} numberOfLines={1}>{itemName}</Text>
+                  <Text style={styles.itemSub}>
+                    Cant: {itemQty} x ${itemPrice.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                  </Text>
+                  
+                  <View style={styles.shippingStateRow}>
+                    <Text style={styles.shippingLabel}>Envío: </Text>
+                    <Text style={[
+                      styles.shippingVal,
+                      shipStatus === 'shipped' ? { color: '#16a34a' } : { color: '#d97706' }
+                    ]}>
+                      {shipStatus === 'pending' || shipStatus === 'pendiente_de_envio' ? 'Pendiente de envío' : 'En camino / Enviado'}
                     </Text>
                   </View>
-                )}
+
+                  {trackCode ? (
+                    <TouchableOpacity 
+                      style={styles.trackingBox}
+                      onPress={() => copyToClipboard(trackCode, 'Guía de rastreo')}
+                    >
+                      <Ionicons name="car-outline" size={13} color="#4f46e5" />
+                      <Text style={styles.trackingText}>
+                        Guía: <Text style={styles.trackingCode}>{trackCode}</Text> 📋
+                      </Text>
+                    </TouchableOpacity>
+                  ) : (
+                    <View style={styles.trackingBox}>
+                      <Ionicons name="hourglass-outline" size={13} color="#64748b" />
+                      <Text style={[styles.trackingText, { color: '#64748b', fontStyle: 'italic' }]}>
+                        Guía: Esperando despacho del vendedor
+                      </Text>
+                    </View>
+                  )}
+                </View>
               </View>
-            </View>
-          ))}
+            );
+          })}
         </View>
 
         <View style={styles.orderFooter}>
           <View style={styles.paymentBox}>
             <Text style={styles.paymentMethod}>💳 Pago: Tarjeta (Stripe)</Text>
-            <TouchableOpacity onPress={() => copyToClipboard(order.pago.transaccion_id, 'Transacción Stripe')}>
+            <TouchableOpacity onPress={() => {
+              const txId = order.payment?.transaction_id || order.pago?.transaccion_id || 'N/A';
+              copyToClipboard(txId, 'Transacción Stripe');
+            }}>
               <Text style={styles.paymentTx} numberOfLines={1}>
-                Tx: {order.pago.transaccion_id} 📋
+                Tx: {order.payment?.transaction_id || order.pago?.transaccion_id || 'N/A'} 📋
               </Text>
             </TouchableOpacity>
           </View>

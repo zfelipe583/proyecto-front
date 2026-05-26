@@ -5,10 +5,10 @@ import { Ionicons } from '@expo/vector-icons';
 const { width } = Dimensions.get('window');
 
 export const ProductCard = ({ product, onPress }) => {
-  const imageUri = product.imagenes?.[0] || product.image || 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=200';
-  const name = product.nombre || product.name || 'Sin nombre';
-  const price = product.precio !== undefined ? product.precio : (product.price || 0);
-  const category = product.categoria?.nombre || 'General';
+  const imageUri = product.images?.[0] || product.imagenes?.[0] || product.image || 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=200';
+  const name = product.name || product.nombre || 'Sin nombre';
+  const price = product.price !== undefined ? product.price : (product.precio || 0);
+  const category = product.category?.name || product.categoria?.nombre || 'General';
   const isLowStock = product.stock === 1;
   const isOutOfStock = product.stock <= 0;
 

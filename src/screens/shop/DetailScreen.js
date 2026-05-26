@@ -10,17 +10,19 @@ export const DetailScreen = ({ route, navigation }) => {
   const { product } = route.params;
   const { addToCart, cart } = useApp();
 
-  const name = product.nombre || product.name || 'Sin nombre';
-  const price = product.precio !== undefined ? product.precio : (product.price || 0);
-  const description = product.descripcion || product.description || 'Sin descripción';
-  const imageUri = product.imagenes?.[0] || product.image || 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=200';
-  const category = product.categoria?.nombre || 'General';
+  const name = product.name || product.nombre || 'Sin nombre';
+  const price = product.price !== undefined ? product.price : (product.precio || 0);
+  const description = product.description || product.descripcion || 'Sin descripción';
+  const imageUri = product.images?.[0] || product.imagenes?.[0] || product.image || 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=200';
+  const category = product.category?.name || product.categoria?.nombre || 'General';
   const stock = product.stock !== undefined ? product.stock : 5;
   const isOutOfStock = stock <= 0;
 
   // Manejo de carrusel de imágenes
   const [activeImageIndex, setActiveImageIndex] = React.useState(0);
-  const images = product.imagenes && product.imagenes.length > 0 ? product.imagenes : [imageUri];
+  const images = product.images && product.images.length > 0 
+    ? product.images 
+    : (product.imagenes && product.imagenes.length > 0 ? product.imagenes : [imageUri]);
 
   const handleScroll = (event) => {
     const contentOffsetX = event.nativeEvent.contentOffset.x;
@@ -29,8 +31,8 @@ export const DetailScreen = ({ route, navigation }) => {
   };
 
   // Comprobar cantidad actual en carrito
-  const cartItem = cart.items.find(item => item.producto_id === product._id);
-  const quantityInCart = cartItem ? cartItem.cantidad : 0;
+  const cartItem = cart.items.find(item => item.product_id === product._id);
+  const quantityInCart = cartItem ? cartItem.quantity : 0;
 
   const handleAddToCart = () => {
     if (isOutOfStock) return;

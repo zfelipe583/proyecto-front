@@ -20,30 +20,36 @@ export const AdminScreen = () => {
   const [creating, setCreating] = useState(false);
 
   // Filtrar productos que pertenecen a este vendedor (Jaime)
-  const myProducts = products.filter(p => p.vendedor_id === user?._id);
+  const myProducts = products.filter(p => (p.seller_id || p.vendedor_id) === user?._id);
 
   // Calcular métricas del vendedor
   const totalSales = orders.reduce((sum, order) => {
-    const myItems = order.items.filter(item => item.vendedor_id === user?._id);
-    const myItemsSum = myItems.reduce((acc, curr) => acc + (curr.precio_pagado * curr.cantidad), 0);
+    const myItems = order.items.filter(item => (item.seller_id || item.vendedor_id) === user?._id);
+    const myItemsSum = myItems.reduce((acc, curr) => {
+      const price = curr.price_paid !== undefined ? curr.price_paid : (curr.precio_pagado || 0);
+      const qty = curr.quantity !== undefined ? curr.quantity : (curr.cantidad || 0);
+      return acc + (price * qty);
+    }, 0);
     return sum + myItemsSum;
   }, 0);
 
   const pendingShipments = orders.reduce((count, order) => {
     const myPendingItems = order.items.filter(
-      item => item.vendedor_id === user?._id && item.estado_envio === 'pendiente_de_envio'
+      item => (item.seller_id || item.vendedor_id) === user?._id && 
+              (item.shipping_status === 'pending' || item.shipping_status === 'pendiente_de_envio' || item.estado_envio === 'pendiente_de_envio')
     );
     return count + myPendingItems.length;
   }, 0);
 
   const handleStartEdit = (prod) => {
     setEditingProduct(prod);
-    setName(prod.nombre || prod.name || '');
-    setPrice((prod.precio !== undefined ? prod.precio : prod.price || 0).toString());
-    setDescription(prod.descripcion || prod.description || '');
+    setName(prod.name || prod.nombre || '');
+    setPrice((prod.price !== undefined ? prod.price : (prod.precio || 0)).toString());
+    setDescription(prod.description || prod.descripcion || '');
     setStock((prod.stock !== undefined ? prod.stock : 5).toString());
-    setCategory(prod.categoria?.nombre || 'Hardware');
-    setImagenesInput(prod.imagenes ? prod.imagenes.join(', ') : '');
+    setCategory(prod.category?.name || prod.categoria?.nombre || 'Hardware');
+    const imgs = prod.images || prod.imagenes || [];
+    setImagenesInput(imgs.join(', '));
   };
 
   const handleCancelEdit = () => {
@@ -80,15 +86,15 @@ export const AdminScreen = () => {
     const finalImagenes = listImagenes.length > 0 ? listImagenes : [defaultImg];
 
     const productData = {
-      nombre: name,
-      precio: parsedPrice,
-      descripcion: description,
+      name: name,
+      price: parsedPrice,
+      description: description,
       stock: parsedStock,
-      categoria: {
-        nombre: category,
+      category: {
+        name: category,
         slug: category.toLowerCase()
       },
-      imagenes: finalImagenes
+      images: finalImagenes
     };
     
     setCreating(true);
@@ -100,7 +106,7 @@ export const AdminScreen = () => {
       } else {
         await createNewProduct({
           ...productData,
-          vendedor_id: user._id // vendedor actual
+          seller_id: user._id // vendedor actual
         });
         Alert.alert("¡Producto Creado!", `Se agregó "${name}" al inventario.`);
       }
@@ -126,7 +132,9 @@ export const AdminScreen = () => {
   };
 
   const handleShipOrder = (orderId, item) => {
-    const codeKey = `${orderId}_${item.producto_id}`;
+    const itemId = item.product_id || item.producto_id;
+    const itemName = item.name || item.nombre;
+    const codeKey = `${orderId}_${itemId}`;
     const code = trackingCodes[codeKey]?.trim() || '';
 
     if (!code) {
@@ -136,13 +144,13 @@ export const AdminScreen = () => {
 
     Alert.alert(
       'Confirmar Envío',
-      `¿Deseas registrar el envío de "${item.nombre}" con guía "${code}"?`,
+      `¿Deseas registrar el envío de "${itemName}" con guía "${code}"?`,
       [
         { text: 'Cancelar', style: 'cancel' },
         { 
           text: 'Confirmar', 
           onPress: async () => {
-            await updateShippingDetails(orderId, item.producto_id, 'enviado', code);
+            await updateShippingDetails(orderId, itemId, 'shipped', code);
             Alert.alert('Despachado', 'Envío registrado correctamente.');
           } 
         }
@@ -160,9 +168,9 @@ export const AdminScreen = () => {
           <Ionicons name="storefront" size={24} color="#b45309" />
         </View>
         <View style={styles.storeInfo}>
-          <Text style={styles.storeName}>{user?.datos_vendedor?.nombre_tienda || 'Zermeño Tech Store'}</Text>
-          <Text style={styles.sellerName}>Jaime Eduardo (Rating: {user?.datos_vendedor?.calificacion_promedio})</Text>
-          <Text style={styles.clabeText}>CLABE: {user?.datos_vendedor?.clabe_interbancaria}</Text>
+          <Text style={styles.storeName}>{user?.seller_data?.store_name || user?.datos_vendedor?.nombre_tienda || 'Zermeño Tech Store'}</Text>
+          <Text style={styles.sellerName}>{user?.name || 'Jaime Eduardo'} (Rating: {user?.seller_data?.average_rating || user?.datos_vendedor?.calificacion_promedio || 5.0})</Text>
+          <Text style={styles.clabeText}>CLABE: {user?.seller_data?.bank_clabe || user?.datos_vendedor?.clabe_interbancaria}</Text>
         </View>
         <TouchableOpacity style={styles.logoutBtn} onPress={logout}>
           <Ionicons name="log-out-outline" size={20} color="#ef4444" />
@@ -193,31 +201,41 @@ export const AdminScreen = () => {
         </View>
       ) : (
         orders.map((order) => {
-          const myItems = order.items.filter(item => item.vendedor_id === user?._id);
+          const myItems = order.items.filter(item => (item.seller_id || item.vendedor_id) === user?._id);
+          const orderDateVal = order.order_date || order.fecha_pedido;
+          const streetVal = order.shipping_address?.street || order.direccion_envio?.calle || '';
+          const cityVal = order.shipping_address?.city || order.direccion_envio?.ciudad || '';
+          const zipVal = order.shipping_address?.zip_code || order.direccion_envio?.codigo_postal || '';
 
           return (
             <View key={order._id} style={styles.orderCard}>
               <View style={styles.orderCardHeader}>
-                <Text style={styles.orderDate}>{new Date(order.fecha_pedido).toLocaleDateString('es-MX')}</Text>
+                <Text style={styles.orderDate}>{new Date(orderDateVal).toLocaleDateString('es-MX')}</Text>
                 <Text style={styles.orderClient}>Cliente: Carlos Gómez</Text>
               </View>
 
               <View style={styles.addressBox}>
                 <Text style={styles.addressLabel}>Dirección de envío:</Text>
                 <Text style={styles.addressText}>
-                  {order.direccion_envio.calle}, {order.direccion_envio.ciudad}, C.P. {order.direccion_envio.codigo_postal}
+                  {streetVal}, {cityVal}, C.P. {zipVal}
                 </Text>
               </View>
 
               {myItems.map((item, idx) => {
-                const isPending = item.estado_envio === 'pendiente_de_envio';
-                const codeKey = `${order._id}_${item.producto_id}`;
+                const itemId = item.product_id || item.producto_id;
+                const itemName = item.name || item.nombre;
+                const itemQty = item.quantity !== undefined ? item.quantity : (item.cantidad || 0);
+                const shipStatus = item.shipping_status || item.estado_envio || 'pending';
+                const trackCode = item.tracking_code || item.codigo_rastreo;
+                
+                const isPending = shipStatus === 'pending' || shipStatus === 'pendiente_de_envio';
+                const codeKey = `${order._id}_${itemId}`;
 
                 return (
                   <View key={idx} style={styles.itemBox}>
                     <View style={styles.itemHeader}>
-                      <Text style={styles.itemName}>{item.nombre}</Text>
-                      <Text style={styles.itemQty}>Cant: {item.cantidad}</Text>
+                      <Text style={styles.itemName}>{itemName}</Text>
+                      <Text style={styles.itemQty}>Cant: {itemQty}</Text>
                     </View>
                     
                     {isPending ? (
@@ -227,7 +245,7 @@ export const AdminScreen = () => {
                           placeholder="Ingresa guía de rastreo (ej. MX-992)"
                           placeholderTextColor="#94a3b8"
                           value={trackingCodes[codeKey] || ''}
-                          onChangeText={(text) => handleTrackingChange(order._id, item.producto_id, text)}
+                          onChangeText={(text) => handleTrackingChange(order._id, itemId, text)}
                         />
                         <TouchableOpacity 
                           style={styles.shipBtn}
@@ -240,7 +258,7 @@ export const AdminScreen = () => {
                       <View style={styles.shippedBadge}>
                         <Ionicons name="checkmark-circle" size={14} color="#16a34a" style={{marginRight: 4}} />
                         <Text style={styles.shippedText}>
-                          Despachado (Guía: <Text style={styles.shippedCode}>{item.codigo_rastreo}</Text>)
+                          Despachado (Guía: <Text style={styles.shippedCode}>{trackCode}</Text>)
                         </Text>
                       </View>
                     )}
@@ -293,7 +311,7 @@ export const AdminScreen = () => {
 
         <Text style={styles.label}>Categoría:</Text>
         <View style={styles.categorySelectRow}>
-          {['Hardware', 'Fotografía'].map(cat => (
+          {['Hardware', 'Fotografía', 'Audio', 'Celulares', 'Videojuegos'].map(cat => (
             <TouchableOpacity
               key={cat}
               style={[
@@ -361,11 +379,11 @@ export const AdminScreen = () => {
       {myProducts.map((prod) => (
         <View key={prod._id} style={styles.catalogItem}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.catalogItemName}>{prod.nombre || prod.name}</Text>
+            <Text style={styles.catalogItemName}>{prod.name || prod.nombre}</Text>
             <Text style={styles.catalogItemPrice}>
-              ${(prod.precio !== undefined ? prod.precio : prod.price || 0).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+              ${(prod.price !== undefined ? prod.price : (prod.precio || 0)).toLocaleString('es-MX', { minimumFractionDigits: 2 })}
             </Text>
-            <Text style={styles.catalogItemCat}>Categoría: {prod.categoria?.nombre || 'General'}</Text>
+            <Text style={styles.catalogItemCat}>Categoría: {prod.category?.name || prod.categoria?.nombre || 'General'}</Text>
           </View>
           
           {/* Botón de Editar */}
@@ -592,7 +610,8 @@ const styles = StyleSheet.create({
   textArea: { height: 60, textAlignVertical: 'top' },
   categorySelectRow: {
     flexDirection: 'row',
-    marginBottom: 8,
+    flexWrap: 'wrap',
+    marginBottom: 4,
     marginTop: 4,
   },
   catSelectChip: {
@@ -602,6 +621,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#cbd5e1',
     marginRight: 6,
+    marginBottom: 6,
   },
   catSelectChipActive: {
     backgroundColor: '#4f46e5',

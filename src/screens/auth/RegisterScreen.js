@@ -32,36 +32,36 @@ export const RegisterScreen = ({ navigation }) => {
 
     // Configurar objeto de usuario según esquema de MongoDB
     const userData = {
-      nombre: name,
+      name: name,
       email: email.trim().toLowerCase(),
-      es_vendedor: esVendedor,
+      is_seller: esVendedor,
       password_hash: '$2b$12$EjemploDeHashSeguro1234567890...' + (esVendedor ? 'Vendedor' : 'Comprador'),
-      direcciones: esVendedor 
+      addresses: esVendedor 
         ? [
             {
-              etiqueta: "Oficina/Almacén",
-              calle: "Av. Universidad 456",
-              ciudad: "Purísima del Rincón",
-              estado: "Guanajuato",
-              codigo_postal: "36400"
+              label: "Oficina/Almacén",
+              street: "Av. Universidad 456",
+              city: "Purísima del Rincón",
+              state: "Guanajuato",
+              zip_code: "36400"
             }
           ]
         : [
             {
-              etiqueta: "Casa",
-              calle: "Calle Flores 123",
-              ciudad: "León",
-              estado: "Guanajuato",
-              codigo_postal: "37000"
+              label: "Casa",
+              street: "Calle Flores 123",
+              city: "León",
+              state: "Guanajuato",
+              zip_code: "37000"
             }
           ]
     };
 
     if (esVendedor) {
-      userData.datos_vendedor = {
-        nombre_tienda: nombreTienda,
-        clabe_interbancaria: clabe,
-        calificacion_promedio: 5.0
+      userData.seller_data = {
+        store_name: nombreTienda,
+        bank_clabe: clabe,
+        average_rating: 5.0
       };
     }
 

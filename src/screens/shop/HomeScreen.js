@@ -10,7 +10,7 @@ export const HomeScreen = ({ navigation }) => {
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('Todos');
 
-  const categories = ['Todos', 'Fotografía', 'Hardware'];
+  const categories = ['Todos', 'Hardware', 'Fotografía', 'Audio', 'Celulares', 'Videojuegos'];
 
   const handleLogout = () => {
     Alert.alert(
@@ -25,12 +25,12 @@ export const HomeScreen = ({ navigation }) => {
 
   const filteredProducts = products.filter(product => {
     const matchesSearch = 
-      (product.nombre || product.name || '').toLowerCase().includes(search.toLowerCase()) || 
-      (product.descripcion || product.description || '').toLowerCase().includes(search.toLowerCase());
+      (product.name || product.nombre || '').toLowerCase().includes(search.toLowerCase()) || 
+      (product.description || product.descripcion || '').toLowerCase().includes(search.toLowerCase());
     
     const matchesCategory = 
       selectedCategory === 'Todos' || 
-      (product.categoria?.nombre || '') === selectedCategory;
+      (product.category?.name || product.categoria?.nombre || '') === selectedCategory;
 
     return matchesSearch && matchesCategory;
   });
@@ -50,7 +50,7 @@ export const HomeScreen = ({ navigation }) => {
       {/* Greeting Banner */}
       <View style={styles.welcomeSection}>
         <View>
-          <Text style={styles.helloText}>Hola, {user?.nombre || 'Comprador'} 👋</Text>
+          <Text style={styles.helloText}>Hola, {user?.name || 'Comprador'} 👋</Text>
           <Text style={styles.subWelcome}>¿Qué deseas adquirir hoy?</Text>
         </View>
         <View style={styles.headerRight}>

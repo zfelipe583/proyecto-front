@@ -68,7 +68,7 @@ export const CartScreen = ({ navigation }) => {
   };
 
   const calcularTotal = () => {
-    return cart.items.reduce((sum, item) => sum + (item.precio_unitario * item.cantidad), 0);
+    return cart.items.reduce((sum, item) => sum + ((item.unit_price || item.precio_unitario || 0) * (item.quantity || item.cantidad || 0)), 0);
   };
 
   const handleCheckout = async () => {
@@ -85,10 +85,10 @@ export const CartScreen = ({ navigation }) => {
     setCheckingOut(true);
     try {
       await processCheckout({
-        calle,
-        ciudad: city,
-        estado: state,
-        codigo_postal: zipCode
+        street: calle,
+        city: city,
+        state: state,
+        zip_code: zipCode
       });
       Alert.alert(
         "Compra Exitosa", 
@@ -119,37 +119,42 @@ export const CartScreen = ({ navigation }) => {
       <Text style={styles.title}>Mi Carrito</Text>
 
       {cart.items.map((item) => {
-        const originalProd = products.find(p => p._id === item.producto_id);
-        const imageUrl = originalProd?.imagenes?.[0] || 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=200';
+        const itemId = item.product_id || item.producto_id;
+        const itemName = item.name || item.nombre;
+        const itemPrice = item.unit_price !== undefined ? item.unit_price : (item.precio_unitario || 0);
+        const itemQty = item.quantity !== undefined ? item.quantity : (item.cantidad || 0);
+        
+        const originalProd = products.find(p => p._id === itemId);
+        const imageUrl = originalProd?.images?.[0] || originalProd?.imagenes?.[0] || 'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=200';
 
         return (
-          <View key={item.producto_id} style={styles.itemCard}>
+          <View key={itemId} style={styles.itemCard}>
             <Image source={{ uri: imageUrl }} style={styles.itemImage} />
             <View style={styles.itemInfo}>
-              <Text style={styles.itemName} numberOfLines={1}>{item.nombre}</Text>
+              <Text style={styles.itemName} numberOfLines={1}>{itemName}</Text>
               <Text style={styles.itemPrice}>
-                ${item.precio_unitario.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
+                ${itemPrice.toLocaleString('es-MX', { minimumFractionDigits: 2 })}
               </Text>
               
 
               <View style={styles.quantityContainer}>
                 <TouchableOpacity 
                   style={styles.qtyBtn} 
-                  onPress={() => handleQuantityChange(item.producto_id, item.cantidad, -1)}
+                  onPress={() => handleQuantityChange(itemId, itemQty, -1)}
                 >
                   <Ionicons name="remove" size={14} color="#475569" />
                 </TouchableOpacity>
-                <Text style={styles.qtyText}>{item.cantidad}</Text>
+                <Text style={styles.qtyText}>{itemQty}</Text>
                 <TouchableOpacity 
                   style={styles.qtyBtn} 
-                  onPress={() => handleQuantityChange(item.producto_id, item.cantidad, 1)}
+                  onPress={() => handleQuantityChange(itemId, itemQty, 1)}
                 >
                   <Ionicons name="add" size={14} color="#475569" />
                 </TouchableOpacity>
               </View>
             </View>
             
-            <TouchableOpacity style={styles.deleteBtn} onPress={() => handleRemoveItem(item.producto_id)}>
+            <TouchableOpacity style={styles.deleteBtn} onPress={() => handleRemoveItem(itemId)}>
               <Ionicons name="trash-outline" size={18} color="#ef4444" />
             </TouchableOpacity>
           </View>

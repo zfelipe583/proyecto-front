@@ -27,16 +27,7 @@ export const LoginScreen = ({ navigation }) => {
     }
   };
 
-  const handleQuickLogin = async (targetEmail, key) => {
-    setLoadingPersona(key);
-    try {
-      await loginPersona(targetEmail, 'password123');
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    } finally {
-      setLoadingPersona(null);
-    }
-  };
+
 
   return (
     <View style={styles.container}>
@@ -82,52 +73,7 @@ export const LoginScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Accesos Rápidos de Prueba (MongoDB Schema) */}
-      <Text style={styles.sectionTitle}>Perfiles de Prueba rápidos</Text>
-      
-      <TouchableOpacity 
-        style={[styles.shortcutCard, loadingPersona === 'carlos' && styles.shortcutActive]}
-        onPress={() => handleQuickLogin('carlos@example.com', 'carlos')}
-        disabled={loadingPersona !== null}
-      >
-        <View style={[styles.avatarBox, { backgroundColor: '#eef2ff' }]}>
-          <Ionicons name="bag-handle" size={20} color="#4f46e5" />
-        </View>
-        <View style={styles.shortcutInfo}>
-          <View style={styles.shortcutHeader}>
-            <Text style={styles.shortcutName}>Carlos Gómez</Text>
-            <Text style={styles.badgeComprador}>Comprador</Text>
-          </View>
-          <Text style={styles.shortcutEmail}>carlos@example.com</Text>
-        </View>
-        {loadingPersona === 'carlos' ? (
-          <ActivityIndicator color="#4f46e5" size="small" />
-        ) : (
-          <Ionicons name="chevron-forward" size={18} color="#94a3b8" />
-        )}
-      </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={[styles.shortcutCard, loadingPersona === 'jaime' && styles.shortcutActive]}
-        onPress={() => handleQuickLogin('jaime@example.com', 'jaime')}
-        disabled={loadingPersona !== null}
-      >
-        <View style={[styles.avatarBox, { backgroundColor: '#fef3c7' }]}>
-          <Ionicons name="storefront" size={20} color="#d97706" />
-        </View>
-        <View style={styles.shortcutInfo}>
-          <View style={styles.shortcutHeader}>
-            <Text style={styles.shortcutName}>Jaime Eduardo</Text>
-            <Text style={styles.badgeVendedor}>Vendedor / Admin</Text>
-          </View>
-          <Text style={styles.shortcutEmail}>jaime@example.com</Text>
-        </View>
-        {loadingPersona === 'jaime' ? (
-          <ActivityIndicator color="#d97706" size="small" />
-        ) : (
-          <Ionicons name="chevron-forward" size={18} color="#94a3b8" />
-        )}
-      </TouchableOpacity>
 
       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
         <Text style={styles.linkText}>¿No tienes cuenta? Regístrate aquí</Text>
