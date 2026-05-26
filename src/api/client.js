@@ -196,9 +196,21 @@ export const apiService = {
       mockUsuarios.push(newUser);
       return newUser;
     } else {
-      // Registro va a POST /api/users
-      const response = await api.post('/users', userData);
-      return response.data;
+      try {
+        // Registro va a POST /api/users
+        const response = await api.post('users', userData);
+        return response.data;
+      } catch (err) {
+        if (err.response && err.response.data && err.response.data.message) {
+          const serverMsg = err.response.data.message;
+          // Si es un error de duplicado de índice de MongoDB/Mongoose (ej. email)
+          if (serverMsg.includes('E11000') || serverMsg.includes('duplicate key') || serverMsg.includes('email_1')) {
+            throw new Error('El correo electrónico ya está registrado por otro usuario.');
+          }
+          throw new Error(serverMsg);
+        }
+        throw err;
+      }
     }
   },
 
