@@ -89,14 +89,12 @@ export const MainTabNavigator = ({ userRole }) => {
         options={{ title: 'Mi Carrito' }} 
       />
       
-      {/* Pestaña de Pedidos / Compras para el cliente (Carlos) */}
       <Tab.Screen 
         name="OrdersTab" 
         component={OrdersScreen} 
         options={{ title: 'Mis Compras' }} 
       />
       
-      {/* Condicional: Si el rol es admin (Jaime), muestra el panel CRUD */}
       {userRole === 'admin' && (
         <Tab.Screen 
           name="AdminTab" 
