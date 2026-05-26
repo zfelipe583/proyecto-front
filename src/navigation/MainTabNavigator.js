@@ -35,6 +35,8 @@ const ShopStackScreen = () => (
 );
 
 export const MainTabNavigator = ({ userRole }) => {
+  const isAdmin = userRole === 'admin';
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -78,24 +80,27 @@ export const MainTabNavigator = ({ userRole }) => {
         },
       })}
     >
-      <Tab.Screen 
-        name="ShopTab" 
-        component={ShopStackScreen} 
-        options={{ title: 'Tienda', headerShown: false }} 
-      />
-      <Tab.Screen 
-        name="CartTab" 
-        component={CartScreen} 
-        options={{ title: 'Mi Carrito' }} 
-      />
+      {!isAdmin && (
+        <>
+          <Tab.Screen 
+            name="ShopTab" 
+            component={ShopStackScreen} 
+            options={{ title: 'Tienda', headerShown: false }} 
+          />
+          <Tab.Screen 
+            name="CartTab" 
+            component={CartScreen} 
+            options={{ title: 'Mi Carrito' }} 
+          />
+          <Tab.Screen 
+            name="OrdersTab" 
+            component={OrdersScreen} 
+            options={{ title: 'Mis Compras' }} 
+          />
+        </>
+      )}
       
-      <Tab.Screen 
-        name="OrdersTab" 
-        component={OrdersScreen} 
-        options={{ title: 'Mis Compras' }} 
-      />
-      
-      {userRole === 'admin' && (
+      {isAdmin && (
         <Tab.Screen 
           name="AdminTab" 
           component={AdminScreen} 

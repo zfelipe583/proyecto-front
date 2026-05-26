@@ -10,7 +10,7 @@ const Stack = createStackNavigator();
 export const AppNavigator = () => {
   const { user } = useApp();
   const isLoggedIn = user !== null;
-  const userRole = user?.es_vendedor ? 'admin' : 'client'; 
+  const userRole = user?.is_seller ? 'admin' : 'client'; 
 
   return (
     <NavigationContainer>

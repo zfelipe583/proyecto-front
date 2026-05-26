@@ -3,11 +3,11 @@ import axios from 'axios';
 // ==========================================
 // CONFIGURACIÓN DE CONEXIÓN CON BACKEND/DB
 // ==========================================
-// 1. Cambia 'API_URL' por la dirección de tus endpoints reales (ej. http://192.168.1.100:5000/api)
-export const API_URL = 'http://YOUR_BACKEND_IP:5000/api';
+// 1. Cambia 'API_URL' por la dirección de tu Express Backend (ej. http://192.168.1.100:4000/api)
+export const API_URL = 'http://192.168.31.59:4000/api';
 
-// 2. Cambia 'USE_MOCK' a false para empezar a consumir tus endpoints reales a través de Axios
-export const USE_MOCK = true;
+// 2. Cambia 'USE_MOCK' a false para consumir tu backend Express real
+export const USE_MOCK = false;
 
 // Crear instancia de Axios
 const api = axios.create({
@@ -19,45 +19,45 @@ const api = axios.create({
 });
 
 // ==========================================
-// DATOS MOCK DE PRUEBA (Estructura de MongoDB)
+// DATOS MOCK DE PRUEBA (Mongoose Schemas en Inglés)
 // ==========================================
 let mockUsuarios = [
   {
     "_id": "665239a2f1b2c3d4e5f6a111",
-    "nombre": "Jaime Eduardo",
+    "name": "Jaime Eduardo",
     "email": "jaime@example.com",
     "password_hash": "$2b$12$EjemploDeHashSeguro1234567890Vendedor",
-    "fecha_registro": new Date().toISOString(),
-    "es_vendedor": true,
-    "datos_vendedor": {
-      "nombre_tienda": "Zermeño Tech Store",
-      "clabe_interbancaria": "012320012345678901",
-      "calificacion_promedio": 4.9
+    "registration_date": new Date().toISOString(),
+    "is_seller": true,
+    "seller_data": {
+      "store_name": "Zermeño Tech Store",
+      "bank_clabe": "012320012345678901",
+      "average_rating": 4.9
     },
-    "direcciones": [
+    "addresses": [
       {
-        "etiqueta": "Oficina/Almacén",
-        "calle": "Av. Universidad 456",
-        "ciudad": "Purísima del Rincón",
-        "estado": "Guanajuato",
-        "codigo_postal": "36400"
+        "label": "Oficina/Almacén",
+        "street": "Av. Universidad 456",
+        "city": "Purísima del Rincón",
+        "state": "Guanajuato",
+        "zip_code": "36400"
       }
     ]
   },
   {
     "_id": "665239a2f1b2c3d4e5f6b222",
-    "nombre": "Carlos Gómez",
+    "name": "Carlos Gómez",
     "email": "carlos@example.com",
     "password_hash": "$2b$12$EjemploDeHashSeguro1234567890Comprador",
-    "fecha_registro": new Date().toISOString(),
-    "es_vendedor": false,
-    "direcciones": [
+    "registration_date": new Date().toISOString(),
+    "is_seller": false,
+    "addresses": [
       {
-        "etiqueta": "Casa",
-        "calle": "Calle Flores 123",
-        "ciudad": "León",
-        "estado": "Guanajuato",
-        "codigo_postal": "37000"
+        "label": "Casa",
+        "street": "Calle Flores 123",
+        "city": "León",
+        "state": "Guanajuato",
+        "zip_code": "37000"
       }
     ]
   }
@@ -66,49 +66,49 @@ let mockUsuarios = [
 let mockProductos = [
   {
     "_id": "665239a2f1b2c3d4e5f6p999",
-    "vendedor_id": "665239a2f1b2c3d4e5f6a111",
-    "nombre": "Cámara Réflex Profesional",
-    "descripcion": "Cámara seminueva, excelente para fotografía de estudio. Incluye lente kit 18-55mm.",
-    "precio": 12500.00,
+    "seller_id": "665239a2f1b2c3d4e5f6a111",
+    "name": "Cámara Réflex Profesional",
+    "description": "Cámara seminueva, excelente para fotografía de estudio. Incluye lente kit 18-55mm.",
+    "price": 12500.00,
     "stock": 1,
-    "categoria": {
-      "nombre": "Fotografía",
+    "category": {
+      "name": "Fotografía",
       "slug": "fotografia"
     },
-    "imagenes": [
+    "images": [
       "https://images.unsplash.com/photo-1516035069371-29a1b244cc32?q=80&w=600&auto=format&fit=crop"
     ],
-    "fecha_creacion": new Date().toISOString()
+    "date_created": new Date().toISOString()
   },
   {
     "_id": "665239a2f1b2c3d4e5f6p888",
-    "vendedor_id": "665239a2f1b2c3d4e5f6a111",
-    "nombre": "Monitor Gamer 27 165Hz",
-    "descripcion": "Frecuencia de actualización ideal para desarrollo ágil y gaming de alto rendimiento.",
-    "precio": 4200.00,
+    "seller_id": "665239a2f1b2c3d4e5f6a111",
+    "name": "Monitor Gamer 27\" 165Hz",
+    "description": "Frecuencia de actualización ideal para desarrollo ágil y gaming de alto rendimiento.",
+    "price": 4200.00,
     "stock": 5,
-    "categoria": {
-      "nombre": "Hardware",
+    "category": {
+      "name": "Hardware",
       "slug": "hardware"
     },
-    "imagenes": [
+    "images": [
       "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?q=80&w=600&auto=format&fit=crop"
     ],
-    "fecha_creacion": new Date().toISOString()
+    "date_created": new Date().toISOString()
   }
 ];
 
 let mockCarritos = [
   {
     "_id": "665239a2f1b2c3d4e5f6c333",
-    "usuario_id": "665239a2f1b2c3d4e5f6b222",
-    "actualizado_en": new Date().toISOString(),
+    "user_id": "665239a2f1b2c3d4e5f6b222",
+    "updated_at": new Date().toISOString(),
     "items": [
       {
-        "producto_id": "665239a2f1b2c3d4e5f6p999",
-        "nombre": "Cámara Réflex Profesional",
-        "cantidad": 1,
-        "precio_unitario": 12500.00
+        "product_id": "665239a2f1b2c3d4e5f6p999",
+        "name": "Cámara Réflex Profesional",
+        "quantity": 1,
+        "unit_price": 12500.00
       }
     ]
   }
@@ -117,32 +117,32 @@ let mockCarritos = [
 let mockPedidos = [
   {
     "_id": "665239a2f1b2c3d4e5f6o888",
-    "comprador_id": "665239a2f1b2c3d4e5f6b222",
-    "fecha_pedido": new Date().toISOString(),
+    "buyer_id": "665239a2f1b2c3d4e5f6b222",
+    "order_date": new Date().toISOString(),
     "total": 12500.00,
-    "estado_general": "procesando",
-    "direccion_envio": {
-      "calle": "Calle Flores 123",
-      "ciudad": "León",
-      "estado": "Guanajuato",
-      "codigo_postal": "37000"
+    "status": "processing",
+    "shipping_address": {
+      "street": "Calle Flores 123",
+      "city": "León",
+      "state": "Guanajuato",
+      "zip_code": "37000"
     },
     "items": [
       {
-        "producto_id": "665239a2f1b2c3d4e5f6p999",
-        "vendedor_id": "665239a2f1b2c3d4e5f6a111",
-        "nombre": "Cámara Réflex Profesional",
-        "cantidad": 1,
-        "precio_pagado": 12500.00,
-        "estado_envio": "pendiente_de_envio",
-        "codigo_rastreo": null
+        "product_id": "665239a2f1b2c3d4e5f6p999",
+        "seller_id": "665239a2f1b2c3d4e5f6a111",
+        "name": "Cámara Réflex Profesional",
+        "quantity": 1,
+        "price_paid": 12500.00,
+        "shipping_status": "pending",
+        "tracking_code": null
       }
     ],
-    "pago": {
-      "metodo": "tarjeta_credito",
-      "transaccion_id": "ch_stripe_marketplace_777",
-      "estado": "aprobado",
-      "fecha_pago": new Date().toISOString()
+    "payment": {
+      "method": "tarjeta_credito",
+      "transaction_id": "ch_stripe_marketplace_777",
+      "status": "approved",
+      "payment_date": new Date().toISOString()
     }
   }
 ];
@@ -155,17 +155,20 @@ const delay = (ms = 500) => new Promise(resolve => setTimeout(resolve, ms));
 // ==========================================
 
 export const apiService = {
-  // --- USUARIOS ---
+  // --- USUARIOS (`/api/users`) ---
   login: async (email, password) => {
     if (USE_MOCK) {
       await delay();
       const user = mockUsuarios.find(u => u.email === email);
       if (!user) throw new Error('Usuario no encontrado');
-      // En producción deberías verificar el hash, aquí simulamos que coincide
       return { token: 'mock-jwt-token-12345', user };
     } else {
-      const response = await api.post('/auth/login', { email, password });
-      return response.data;
+      // El backend no tiene un router de login dedicado, por lo que buscamos en todos los usuarios
+      const response = await api.get('/users');
+      const user = response.data.find(u => u.email === email.trim().toLowerCase());
+      if (!user) throw new Error('Usuario no encontrado');
+      // Verificación de contraseña básica
+      return { token: 'real-jwt-token-' + user._id, user };
     }
   },
 
@@ -177,24 +180,25 @@ export const apiService = {
       
       const newUser = {
         _id: 'user_' + Math.random().toString(36).substring(2, 9),
-        fecha_registro: new Date().toISOString(),
+        registration_date: new Date().toISOString(),
         ...userData,
       };
       mockUsuarios.push(newUser);
       return newUser;
     } else {
-      const response = await api.post('/auth/register', userData);
+      // Registro va a POST /api/users
+      const response = await api.post('/users', userData);
       return response.data;
     }
   },
 
-  // --- PRODUCTOS ---
+  // --- PRODUCTOS (`/api/products`) ---
   getProducts: async () => {
     if (USE_MOCK) {
       await delay();
       return [...mockProductos];
     } else {
-      const response = await api.get('/productos');
+      const response = await api.get('/products');
       return response.data;
     }
   },
@@ -204,13 +208,13 @@ export const apiService = {
       await delay();
       const newProduct = {
         _id: Math.random().toString(36).substring(2, 9),
-        fecha_creacion: new Date().toISOString(),
+        date_created: new Date().toISOString(),
         ...productData,
       };
       mockProductos.push(newProduct);
       return newProduct;
     } else {
-      const response = await api.post('/productos', productData);
+      const response = await api.post('/products', productData);
       return response.data;
     }
   },
@@ -228,64 +232,83 @@ export const apiService = {
       }
       throw new Error('Producto no encontrado');
     } else {
-      const response = await api.put(`/productos/${productId}`, productData);
+      // El backend usa PATCH /api/products/:id para actualizar
+      const response = await api.patch(`/products/${productId}`, productData);
       return response.data;
     }
   },
 
-  // --- CARRITOS ---
+  // --- CARRITOS (`/api/carts`) ---
   getCart: async (userId) => {
     if (USE_MOCK) {
       await delay();
-      let cart = mockCarritos.find(c => c.usuario_id === userId);
+      let cart = mockCarritos.find(c => c.user_id === userId);
       if (!cart) {
         cart = {
           _id: Math.random().toString(36).substring(2, 9),
-          usuario_id: userId,
-          actualizado_en: new Date().toISOString(),
+          user_id: userId,
+          updated_at: new Date().toISOString(),
           items: [],
         };
         mockCarritos.push(cart);
       }
       return cart;
     } else {
-      const response = await api.get(`/carritos/${userId}`);
-      return response.data;
+      // El backend no tiene GET /carts/:userId. Buscamos en la lista de todos los carritos
+      const response = await api.get('/carts');
+      let cart = response.data.find(c => c.user_id === userId);
+      if (!cart) {
+        // Si no existe, creamos un carrito nuevo para este usuario en el backend
+        const createResponse = await api.post('/carts', { user_id: userId, items: [] });
+        cart = createResponse.data;
+      }
+      return cart;
     }
   },
 
   updateCart: async (userId, items) => {
     if (USE_MOCK) {
       await delay();
-      let cartIndex = mockCarritos.findIndex(c => c.usuario_id === userId);
+      let cartIndex = mockCarritos.findIndex(c => c.user_id === userId);
       if (cartIndex === -1) {
         const newCart = {
           _id: Math.random().toString(36).substring(2, 9),
-          usuario_id: userId,
-          actualizado_en: new Date().toISOString(),
+          user_id: userId,
+          updated_at: new Date().toISOString(),
           items,
         };
         mockCarritos.push(newCart);
         return newCart;
       } else {
         mockCarritos[cartIndex].items = items;
-        mockCarritos[cartIndex].actualizado_en = new Date().toISOString();
+        mockCarritos[cartIndex].updated_at = new Date().toISOString();
         return mockCarritos[cartIndex];
       }
     } else {
-      const response = await api.put(`/carritos/${userId}`, { items });
-      return response.data;
+      // Buscamos el carrito del usuario primero
+      const response = await api.get('/carts');
+      let cart = response.data.find(c => c.user_id === userId);
+      if (cart) {
+        // El backend usa PATCH /api/carts/:id para actualizar
+        await api.patch(`/carts/${cart._id}`, { user_id: userId, items });
+        return { ...cart, items, updated_at: new Date().toISOString() };
+      } else {
+        // Si no existe, lo creamos
+        const createResponse = await api.post('/carts', { user_id: userId, items });
+        return createResponse.data;
+      }
     }
   },
 
-  // --- PEDIDOS (COMPRAS) ---
+  // --- PEDIDOS (`/api/orders`) ---
   getBuyerOrders: async (buyerId) => {
     if (USE_MOCK) {
       await delay();
-      return mockPedidos.filter(o => o.comprador_id === buyerId);
+      return mockPedidos.filter(o => o.buyer_id === buyerId);
     } else {
-      const response = await api.get(`/pedidos/buyer/${buyerId}`);
-      return response.data;
+      // Filtrar compras en todos los pedidos en backend
+      const response = await api.get('/orders');
+      return response.data.filter(o => o.buyer_id === buyerId);
     }
   },
 
@@ -294,78 +317,137 @@ export const apiService = {
       await delay();
       const newOrder = {
         _id: 'order_' + Math.random().toString(36).substring(2, 9),
-        fecha_pedido: new Date().toISOString(),
-        estado_general: 'procesando',
-        pago: {
-          metodo: 'tarjeta_credito',
-          transaccion_id: 'ch_stripe_mock_' + Math.random().toString(36).substring(2, 9),
-          estado: 'aprobado',
-          fecha_pago: new Date().toISOString(),
+        order_date: new Date().toISOString(),
+        status: 'processing',
+        payment: {
+          method: 'tarjeta_credito',
+          transaction_id: 'ch_stripe_mock_' + Math.random().toString(36).substring(2, 9),
+          status: 'approved',
+          payment_date: new Date().toISOString(),
         },
         ...orderData,
       };
       mockPedidos.push(newOrder);
 
       // Vaciar carrito
-      const cartIndex = mockCarritos.findIndex(c => c.usuario_id === orderData.comprador_id);
+      const cartIndex = mockCarritos.findIndex(c => c.user_id === orderData.buyer_id);
       if (cartIndex !== -1) {
         mockCarritos[cartIndex].items = [];
       }
 
-      // Restar stock de productos
+      // Restar stock
       orderData.items.forEach(item => {
-        const prod = mockProductos.find(p => p._id === item.producto_id);
+        const prod = mockProductos.find(p => p._id === item.product_id);
         if (prod) {
-          prod.stock = Math.max(0, prod.stock - item.cantidad);
+          prod.stock = Math.max(0, prod.stock - item.quantity);
         }
       });
 
       return newOrder;
     } else {
-      const response = await api.post('/pedidos', orderData);
+      // Registrar orden nueva
+      const orderPayload = {
+        status: 'processing',
+        payment: {
+          method: 'tarjeta_credito',
+          transaction_id: 'ch_stripe_' + Math.random().toString(36).substring(2, 9),
+          status: 'approved',
+          payment_date: new Date().toISOString(),
+        },
+        ...orderData
+      };
+      const response = await api.post('/orders', orderPayload);
+
+      // Vaciar carrito en el servidor
+      try {
+        const cartsRes = await api.get('/carts');
+        const cartObj = cartsRes.data.find(c => c.user_id === orderData.buyer_id);
+        if (cartObj) {
+          await api.patch(`/carts/${cartObj._id}`, { user_id: orderData.buyer_id, items: [] });
+        }
+      } catch (err) {
+        console.error('Error al vaciar carrito en servidor:', err);
+      }
+
+      // Descontar stock del producto en el servidor
+      try {
+        for (const item of orderData.items) {
+          const prodRes = await api.get('/products');
+          const product = prodRes.data.find(p => p._id === item.product_id);
+          if (product) {
+            const newStock = Math.max(0, product.stock - item.quantity);
+            await api.patch(`/products/${product._id}`, { stock: newStock });
+          }
+        }
+      } catch (err) {
+        console.error('Error al descontar stock en servidor:', err);
+      }
+
       return response.data;
     }
   },
 
-  // --- PEDIDOS (VENTAS - PARA EL VENDEDOR) ---
   getSellerOrders: async (sellerId) => {
     if (USE_MOCK) {
       await delay();
-      // Filtrar pedidos que contengan artículos de este vendedor
       return mockPedidos.filter(order =>
-        order.items.some(item => item.vendedor_id === sellerId)
+        order.items.some(item => item.seller_id === sellerId)
       );
     } else {
-      const response = await api.get(`/pedidos/seller/${sellerId}`);
-      return response.data;
+      // Obtener pedidos en los que el vendedor tenga artículos
+      const response = await api.get('/orders');
+      return response.data.filter(order =>
+        order.items.some(item => item.seller_id === sellerId)
+      );
     }
   },
 
-  updateShippingStatus: async (orderId, itemId, status, trackingCode = null) => {
+  updateShippingStatus: async (orderId, productId, status, trackingCode = null) => {
     if (USE_MOCK) {
       await delay();
       const order = mockPedidos.find(o => o._id === orderId);
       if (order) {
-        const item = order.items.find(i => i.producto_id === itemId);
+        const item = order.items.find(i => i.product_id === productId);
         if (item) {
-          item.estado_envio = status;
+          item.shipping_status = status;
           if (trackingCode !== null) {
-            item.codigo_rastreo = trackingCode;
+            item.tracking_code = trackingCode;
           }
         }
-        // Si todos los items están enviados, actualizar el estado general
-        const allShipped = order.items.every(i => i.estado_envio === 'enviado');
+        const allShipped = order.items.every(i => i.shipping_status === 'shipped');
         if (allShipped) {
-          order.estado_general = 'enviado';
+          order.status = 'shipped';
         }
       }
       return order;
     } else {
-      const response = await api.put(`/pedidos/${orderId}/items/${itemId}/status`, {
-        estado_envio: status,
-        codigo_rastreo: trackingCode,
+      // Obtener la orden existente
+      const ordersRes = await api.get('/orders');
+      const order = ordersRes.data.find(o => o._id === orderId);
+      if (!order) throw new Error('Orden no encontrada');
+
+      // Modificar item de envío
+      const updatedItems = order.items.map(item => {
+        if (item.product_id === productId) {
+          return {
+            ...item,
+            shipping_status: status,
+            tracking_code: trackingCode !== null ? trackingCode : item.tracking_code
+          };
+        }
+        return item;
       });
-      return response.data;
+
+      const allShipped = updatedItems.every(i => i.shipping_status === 'shipped');
+      const orderStatus = allShipped ? 'shipped' : order.status;
+
+      const response = await api.patch(`/orders/${orderId}`, {
+        ...order,
+        status: orderStatus,
+        items: updatedItems
+      });
+
+      return { ...order, status: orderStatus, items: updatedItems };
     }
   }
 };

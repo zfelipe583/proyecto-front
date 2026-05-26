@@ -15,7 +15,7 @@ export const AppProvider = ({ children }) => {
     fetchProductsList();
   }, []);
 
-  // Cargar información específica del usuario (carrito, pedidos) cuando inicie sesión
+  // Cargar información específica del usuario cuando inicie sesión
   useEffect(() => {
     if (user) {
       loadUserData();
@@ -41,7 +41,7 @@ export const AppProvider = ({ children }) => {
       // 1. Cargar Pedidos (si es vendedor, de su tienda; si es comprador, los que hizo él)
       await fetchUserOrders();
       // 2. Cargar Carrito (solo si es comprador)
-      if (!user.es_vendedor) {
+      if (!user.is_seller) {
         const cartData = await apiService.getCart(user._id);
         setCart(cartData);
       }
@@ -56,7 +56,7 @@ export const AppProvider = ({ children }) => {
     if (!user) return;
     try {
       let ordersData = [];
-      if (user.es_vendedor) {
+      if (user.is_seller) {
         ordersData = await apiService.getSellerOrders(user._id);
       } else {
         ordersData = await apiService.getBuyerOrders(user._id);
@@ -99,21 +99,24 @@ export const AppProvider = ({ children }) => {
     setUser(null);
   };
 
-  // Operaciones del Carrito
+  // Operaciones del Carrito (Mapeado a Mongoose: product_id, unit_price, quantity)
   const addToCart = async (product, quantity = 1) => {
-    if (!user || user.es_vendedor) return;
+    if (!user || user.is_seller) return;
     
     const updatedItems = [...cart.items];
-    const existingIndex = updatedItems.findIndex(item => item.producto_id === product._id);
+    const existingIndex = updatedItems.findIndex(item => item.product_id === product._id);
+
+    const price = product.price !== undefined ? product.price : product.precio;
+    const name = product.name || product.nombre;
 
     if (existingIndex > -1) {
-      updatedItems[existingIndex].cantidad += quantity;
+      updatedItems[existingIndex].quantity += quantity;
     } else {
       updatedItems.push({
-        producto_id: product._id,
-        nombre: product.nombre,
-        cantidad: quantity,
-        precio_unitario: product.precio
+        product_id: product._id,
+        name: name,
+        quantity: quantity,
+        unit_price: price
       });
     }
 
@@ -127,7 +130,7 @@ export const AppProvider = ({ children }) => {
 
   const removeFromCart = async (productId) => {
     if (!user) return;
-    const updatedItems = cart.items.filter(item => item.producto_id !== productId);
+    const updatedItems = cart.items.filter(item => item.product_id !== productId);
     try {
       const updatedCart = await apiService.updateCart(user._id, updatedItems);
       setCart(updatedCart);
@@ -139,8 +142,8 @@ export const AppProvider = ({ children }) => {
   const updateCartItemQuantity = async (productId, newQuantity) => {
     if (!user || newQuantity < 1) return;
     const updatedItems = cart.items.map(item => {
-      if (item.producto_id === productId) {
-        return { ...item, cantidad: newQuantity };
+      if (item.product_id === productId) {
+        return { ...item, quantity: newQuantity };
       }
       return item;
     });
@@ -152,36 +155,35 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  // Crear Pedido (Checkout del comprador Carlos)
+  // Crear Pedido (Mapeado a Mongoose: buyer_id, shipping_address, items: [{ product_id, seller_id, price_paid, shipping_status }])
   const processCheckout = async (direccionEnvio) => {
     if (!user || cart.items.length === 0) return;
 
     // Sumar el total
-    const total = cart.items.reduce((sum, item) => sum + (item.precio_unitario * item.cantidad), 0);
+    const total = cart.items.reduce((sum, item) => sum + (item.unit_price * item.quantity), 0);
 
-    // Mapear items al esquema de Pedidos de MongoDB
+    // Mapear items al esquema de Pedidos de la base de datos
     const orderItems = cart.items.map(item => {
-      // Buscar el producto original para obtener el vendedor_id
-      const originalProd = products.find(p => p._id === item.producto_id);
+      const originalProd = products.find(p => p._id === item.product_id);
       return {
-        producto_id: item.producto_id,
-        vendedor_id: originalProd ? originalProd.vendedor_id : "665239a2f1b2c3d4e5f6a111", // default a Jaime
-        nombre: item.nombre,
-        cantidad: item.cantidad,
-        precio_pagado: item.precio_unitario,
-        estado_envio: "pendiente_de_envio",
-        codigo_rastreo: null
+        product_id: item.product_id,
+        seller_id: originalProd ? originalProd.seller_id : "665239a2f1b2c3d4e5f6a111", // default a Jaime
+        name: item.name,
+        quantity: item.quantity,
+        price_paid: item.unit_price,
+        shipping_status: "pending",
+        tracking_code: null
       };
     });
 
     const orderData = {
-      comprador_id: user._id,
+      buyer_id: user._id,
       total,
-      direccion_envio: {
-        calle: direccionEnvio.calle,
-        ciudad: direccionEnvio.ciudad,
-        estado: direccionEnvio.estado,
-        codigo_postal: direccionEnvio.codigo_postal
+      shipping_address: {
+        street: direccionEnvio.street || direccionEnvio.calle,
+        city: direccionEnvio.city || direccionEnvio.ciudad,
+        state: direccionEnvio.state || direccionEnvio.estado,
+        zip_code: direccionEnvio.zip_code || direccionEnvio.codigo_postal
       },
       items: orderItems
     };
@@ -203,7 +205,7 @@ export const AppProvider = ({ children }) => {
 
   // Acciones del Vendedor (Jaime)
   const updateShippingDetails = async (orderId, productId, status, trackingCode = null) => {
-    if (!user || !user.es_vendedor) return;
+    if (!user || !user.is_seller) return;
     setLoading(true);
     try {
       await apiService.updateShippingStatus(orderId, productId, status, trackingCode);
@@ -218,11 +220,11 @@ export const AppProvider = ({ children }) => {
 
   // Crear Producto Nuevo (Vendedor Jaime)
   const createNewProduct = async (productData) => {
-    if (!user || !user.es_vendedor) return;
+    if (!user || !user.is_seller) return;
     setLoading(true);
     try {
       const newProduct = await apiService.createProduct({
-        vendedor_id: user._id,
+        seller_id: user._id,
         ...productData,
       });
       await fetchProductsList(); // Recargar productos locales
@@ -237,7 +239,7 @@ export const AppProvider = ({ children }) => {
 
   // Editar Producto Existente (Vendedor Jaime)
   const updateExistingProduct = async (productId, productData) => {
-    if (!user || !user.es_vendedor) return;
+    if (!user || !user.is_seller) return;
     setLoading(true);
     try {
       const updatedProduct = await apiService.updateProduct(productId, productData);
