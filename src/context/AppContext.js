@@ -192,6 +192,21 @@ export const AppProvider = ({ children }) => {
     try {
       const newOrder = await apiService.createOrder(orderData);
       setOrders(prev => [newOrder, ...prev]);
+      
+      // Actualizar localmente el stock de los productos inmediatamente
+      setProducts(prevProducts => {
+        return prevProducts.map(p => {
+          const orderedItem = orderItems.find(item => item.product_id === p._id);
+          if (orderedItem) {
+            return {
+              ...p,
+              stock: Math.max(0, p.stock - orderedItem.quantity)
+            };
+          }
+          return p;
+        });
+      });
+
       setCart({ items: [] }); // Vaciar localmente
       await fetchProductsList(); // Actualizar stock de los productos
       return newOrder;

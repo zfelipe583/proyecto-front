@@ -2,6 +2,7 @@ import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons } from '@expo/vector-icons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { HomeScreen } from '../screens/shop/HomeScreen';
 import { DetailScreen } from '../screens/shop/DetailScreen';
@@ -36,6 +37,7 @@ const ShopStackScreen = () => (
 
 export const MainTabNavigator = ({ userRole }) => {
   const isAdmin = userRole === 'admin';
+  const insets = useSafeAreaInsets();
 
   return (
     <Tab.Navigator
@@ -56,8 +58,8 @@ export const MainTabNavigator = ({ userRole }) => {
         tabBarActiveTintColor: '#6366f1',
         tabBarInactiveTintColor: '#94a3b8',
         tabBarStyle: { 
-          paddingBottom: 8, 
-          height: 60, 
+          paddingBottom: insets.bottom > 0 ? insets.bottom : 8, 
+          height: 60 + (insets.bottom > 0 ? insets.bottom - 8 : 0), 
           backgroundColor: '#ffffff',
           borderTopWidth: 1,
           borderTopColor: '#f1f5f9',
