@@ -1,15 +1,16 @@
-// src/navigation/AppNavigator.js
-import React, { useState } from 'react';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AuthNavigator } from './AuthNavigator';
 import { MainTabNavigator } from './MainTabNavigator';
+import { useApp } from '../context/AppContext';
 
 const Stack = createStackNavigator();
 
 export const AppNavigator = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false); 
-  const [userRole, setUserRole] = useState('client'); 
+  const { user } = useApp();
+  const isLoggedIn = user !== null;
+  const userRole = user?.es_vendedor ? 'admin' : 'client'; 
 
   return (
     <NavigationContainer>
